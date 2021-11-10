@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ik ben gek</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"
+        integrity="sha512-N4kV7GkNv7QR7RX9YF/olywyIgIwNvfEe2nZtfyj73HdjCUkAfOBDbcuJ/cTaN04JKRnw1YG1wnUyNKMsNgg3g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+    <script>
+        function getlength(vector) {
+            return Math.sqrt(vector.x * vector.x + vector.y * vector.y)
+        }
+        window.addEventListener('contextmenu', e => {
+            e.preventDefault();
+        });
+        let playerpos = { x: 0, y: 0, r: 0 }
+        let playervel = { x: 0, y: 0, r: 0 }
+        let campos = { x: 0, y: 0 }
+        let camvel = { x: 0, y: 0 }
+        let score = 0
+        let health = 200
+        let shield = 100
+        let discovered = false
+        let projectiles = []
+        let stars = []
+        let buildings = []
+        let streetlines = []
+        let explosionparticles = []
+        let cars = []
+        let humans = []
+        let bullets = []
+        let tijd = 0
+        let weaponeffect = 0
+        let weaponcolor = { r: 0, g: 0, b: 0 }
+        const cartypes = ["car", "truck", "police", "tank"]
+        function setup() {
+            createCanvas(800, 600);
+            for (let i = 0; i < 100; i++) {
+                stars.push({
+                    x: Math.random() * 1000 - 80,
+                    y: Math.random() * 600,
+                    size: Math.random() * 4 + 1
+                })
+            }
+            for (let i = 0; i < 200; i++) {
+                buildings.push({
+                    x: Math.random() * 4000 - 2000,
+                    y: 530,
+                    sizex: -(Math.random() + 20) * 2,
+                    sizey: -(Math.random() + 2) * 50,
+                    depth: Math.random() * 1 + 1.2
+                })
+            }
+            const streetlinecount = 50;
+            for (let i = 0; i < streetlinecount; i++) {
+                streetlines.push({
+                    x: i * (4000 / streetlinecount) - 2000,
+                    y: 544,
+                })
+            }
+            for (let i = 0; i < 600; i++) {
+                update();
+            }
+        }
+        function update() {
+            tijd += deltaTime;
+            playervel.x += (mouseX + campos.x - playerpos.x) / 4;
+            playervel.y += (mouseY + campos.y - playerpos.y) / 4;
+            playervel.r += playervel.x / 20;
+            playervel.x *= 0.4;
+            playervel.y *= 0.4;
+            playervel.r *= 0.9;
+            playerpos.r *= 0.6;
+            playerpos.x += playervel.x
+            playerpos.y += playervel.y
+            playerpos.r += playervel.r
+
+            camvel.x *= 0.93;
+            camvel.y *= 0.93;
+            campos.x += camvel.x
+            campos.y += camvel.y
+
+            if (score >= 5) {
+                discovered = true;
+            }
+
+            if (keyIsDown(68))
+                camvel.x += 1;
+            if (keyIsDown(65))
+                camvel.x += -1;
+
+            if (shield < 100) {
+                shield += 0.1;
+            }
+
+
+            if (Math.random() > 0.97) {
+                let leftlane = Math.random() > 0.5
+                if (score > 250 && Math.random() > 0.5) {
+                    cars.push({
+                        type: "police",
+                        leftlane: leftlane,
+                        hue: Math.random() * 360,
+                        x: leftlane ? -1300 : 2031,
+                        y: 544,
+                        hp: 12,
+                        velx: 0,
+                        vely: 0,
+                        r: 0,
+                        velr: 0
+                    })
+                    if (Math.random() > 0.9 && score > 500) {
+                        cars.push({
+                            type: "tank",
+                            leftlane: leftlane,
+                            hue: Math.random() * 360,
+                            x: leftlane ? -1300 : 2031,
+                            y: 544,
+                            hp: 35,
+                            velx: 0,
+                            vely: 0,
+                            r: 0,
+                            velr: 0
+                        })
+                    }
+                    if (Math.random() > 0.5) {
+                        cars.push({
+                            type: "military",
+                            leftlane: leftlane,
+                            hue: Math.random() * 360,
+                            x: leftlane ? -1300 : 2031,
+                            y: 544,
+                            hp: 20,
+                            velx: 0,
+                            vely: 0,
+                            r: 0,
+                            velr: 0
+                        })
+                    }
+                }
+                if (score < 300 || (score < 700 && Math.random() > 0.9)) {
+                    if (Math.random > 0.5) {
+                        humans.push({
+                            leftlane: leftlane,
+                            hue: Math.random() * 360,
+                            x: leftlane ? -1300 : 2031,
+                            y: 544,
+                            hp: 1,
+                            velx: 0,
+                            vely: 0,
+                            r: 0,
+                            velr: 0
+                        })
+                    }
+                    if ((Math.random() > 0.25)) {
+                        cars.push({
+                            type: "car",
+                            leftlane: leftlane,
+                            hue: Math.random() * 360,
+                            x: leftlane ? -1300 : 2031,
+                            y: 544,
+                            hp: 10,
+                            velx: 0,
+                            vely: 0,
+                            r: 0,
+                            velr: 0
+                        })
+                    } else {
+                        if ((Math.random() > 0.25)) {
+                            cars.push({
+                                type: "truck",
+                                leftlane: leftlane,
+                                hue: Math.random() * 360,
+                                x: leftlane ? -1300 : 2031,
+                                y: 544,
+                                hp: 15,
+                                velx: 0,
+                                vely: 0,
+                                r: 0,
+                                velr: 0
+                            })
+                        } else {
+                            cars.push({
+                                type: "police",
+                                leftlane: leftlane,
+                                hue: Math.random() * 360,
+                                x: leftlane ? -1300 : 2031,
+                                y: 544,
+                                hp: 12,
+                                velx: 0,
+                                vely: 0,
+                                r: 0,
+                                velr: 0
+                            })
+                        }
+                    }
+                }
+            }
+
+            if (campos.x > 1200)
+                campos.x = 1200
+            if (campos.x < -1200)
+                campos.x = -1200
+
+            if (playerpos.y > 544) {
+                playerpos.y = 544;
+                playervel.y = 0;
+            }
+
+            // if (mouseIsPressed) {
+            //     if (mouseButton === CENTER) {
+            //         explosion(playerpos.x, 544, playerpos.y / 80 + 1, 0, { r: 255, g: 0, b: 0 }, { r: 255, g: 94, b: 94 });
+            //     }
+            // }
+
+            //bullets
+            for (const bullet of bullets) {
+                if (Math.abs(playerpos.y - bullet.y) + Math.abs(playerpos.x - bullet.x) < 60)
+                    if (shield > 0) {
+                        shield -= bullet.damage;
+                        bullets = bullets.filter(bullet => Math.abs(bullet.y - playerpos.y) + Math.abs(bullet.x - playerpos.x) > 60);
+                        explosion(bullet.x, bullet.y, bullet.size / 5, bullet.damage / 10, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 });
+                    } else {
+                        if (Math.abs(playerpos.y - bullet.y) + Math.abs(playerpos.x - bullet.x) < 20)
+                            health -= bullet.damage;
+                        bullets = bullets.filter(bullet => Math.abs(bullet.y - playerpos.y) + Math.abs(bullet.x - playerpos.x) > 20);
+                    }
+                bullet.x += bullet.xvel;
+                bullet.y += bullet.yvel;
+                bullet.yvel += bullet.weight / 100;
+            }
+            bullets = bullets.filter(bullet => bullet.y < 564 && bullet.y > -50 && bullet.x > -1207 && bullet.x < 2011);
+            // if (shield > 0) {
+
+            // } else {
+            //     
+            // }
+
+
+            //explosoirn
+            for (const particle of explosionparticles) {
+                particle.velx *= 0.9;
+                particle.vely *= 0.9;
+                particle.x += particle.velx;
+                particle.y += particle.vely;
+                particle.age += deltaTime / 1000;
+            }
+            explosionparticles = explosionparticles.filter(particle => particle.age < particle.lifespan);
+
+            updatecar();
+            for (const human of humans) {
+                updatehuman(human);
+            }
+
+            //projuytilebehociour
+            for (const projectile of projectiles) {
+                projectile.x += projectile.velx;
+                projectile.y += projectile.vely;
+                if (projectile.y > 544) {
+                    explosion(projectile.x, projectile.y, 2, 4, { r: 174, g: 0, b: 255 }, { r: 215, g: 135, b: 255 });
+                }
+                if (projectile.expired) {
+                    explosion(projectile.x, projectile.y, 2, 4, { r: 174, g: 0, b: 255 }, { r: 215, g: 135, b: 255 });
+                }
+            }
+            projectiles = projectiles.filter(projectile => projectile.y < 544 && !projectile.expired);
+        }
+        function updatehuman(human) {
+            human.vely += 0.1;
+            human.velr *= 0.99;
+
+            if ((Math.abs(human.x - playerpos.x) + Math.abs(human.y - playerpos.y)) < 25) {
+                human.velx += playervel.x / 5;
+                human.vely += playervel.y / 5;
+                if ((human.vely - playervel.y) + Math.abs(human.velr - playervel.r) + Math.abs(human.velx - playervel.x) > 2)
+                    human.hp -= Math.abs((human.vely - playervel.y) + Math.abs(human.velr - playervel.r) + Math.abs(human.velx - playervel.x))
+            }
+            if (mouseIsPressed) {
+                if (mouseButton === CENTER) {
+                    if (car.y > playerpos.y) {
+                        if (Math.abs(car.x - playerpos.x) < 2) {
+                            human.hp -= 10
+                        }
+
+                    }
+                }
+
+                if (mouseButton === RIGHT) {
+                    if (Math.abs(car.x - playerpos.x) < 50 && car.y > playerpos.y) {
+                        human.vely += (playervel.y / 2) - 0.5;
+                        human.velx += (playerpos.x - car.x) / 5;
+                        human.vely *= 0.8;
+                        human.velx *= 0.8;
+                        human.velr += (playervel.x / 10) + Math.random() * 2 - 1;
+                    }
+                }
+            }
+            human.x += human.velx;
+            human.y += human.vely;
+            human.r += human.velr;
+
+            if (human.y > 580) {
+                if (Math.abs(human.vely) + Math.abs(human.velr) + (Math.abs(human.velx) / 5) > 5) {
+                    human.hp -= ((Math.abs(human.vely) * 3) + Math.abs(human.velr) + (Math.abs(human.velx / 10))) / 2
+                }
+                if (human.hp > 7 && human.r > -2 && human.r < 2) {
+                    human.velx *= 0.9;
+                } else {
+                    human.velx *= 0.85;
+                }
+                human.velr *= 0.8;
+
+                human.y = 580;
+                human.vely = -human.vely / 2;
+            }
+            if (human.hp > 7 && human.y >= 580) {
+                if (human.r > -2 && human.r < 2) {
+                    human.velx += (human.leftlane ? 0.1 : -0.1);
+                }
+                if (Math.abs(human.vely) < 1) {
+                    human.r *= 0.97;
+                }
+            }
+            projectiles.forEach(projectile => {
+                if (Math.abs(human.x - projectile.x) + Math.abs(human.y - projectile.y) < 50) {
+                    human.hp += -5;
+                    projectile.expired = true;
+                }
+            });
+            if (human.hp <= 0) {
+                score += 0.5;
+            }
+            humans = humans.filter(human => human.hp > 0 && human.x < 2035 && human.x > -1301);
+        }
+        function updatecar() {
+
+            for (const car of cars) {
+                car.vely += 0.1;
+                car.velr *= 0.99;
+
+                if (car.type == "police" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.995) {
+                    bullets.push({
+                        x: car.x,
+                        y: car.y,
+                        size: 5,
+                        xvel: 4 * (Math.random() * 0.1 - 0.05 + -(car.x - playerpos.x) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
+                        yvel: 4 * (Math.random() * 0.1 - 0.05 + -(car.y - playerpos.y) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
+                        weight: 0,
+                        color1: { r: 255, g: 255, b: 0 },
+                        color2: { r: 255, g: 255, b: 255 },
+                        damage: 6
+                    })
+                }
+                if (car.type == "military" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.92 && Math.sin(tijd / 100) > 0.5) {
+                    bullets.push({
+                        x: car.x,
+                        y: car.y,
+                        size: 5,
+                        xvel: 4 * (Math.random() * 0.1 - 0.05 + -(car.x - playerpos.x) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
+                        yvel: 4 * (Math.random() * 0.1 - 0.05 + -(car.y - playerpos.y) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
+                        weight: 0,
+                        color1: { r: 255, g: 255, b: 0 },
+                        color2: { r: 255, g: 255, b: 255 },
+                        damage: 6
+                    })
+                }
+                if (car.type == "tank" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.99 && Math.sin(tijd / 100) > 0.9) {
+                    bullets.push({
+                        x: car.x,
+                        y: car.y,
+                        size: 8,
+                        xvel: 6 * (Math.random() * 0.1 - 0.05 + -(car.x - playerpos.x) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
+                        yvel: 6 * (Math.random() * 0.1 - 0.05 + -(car.y - playerpos.y) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
+                        weight: 2,
+                        color1: { r: 255, g: 58, b: 0 },
+                        color2: { r: 255, g: 255, b: 255 },
+                        damage: 50
+                    })
+                }
+
+                if ((Math.abs(car.x - playerpos.x) + Math.abs(car.y - playerpos.y)) < 25) {
+                    car.velx += playervel.x / 5;
+                    car.vely += playervel.y / 5;
+                    if ((car.vely - playervel.y) + Math.abs(car.velr - playervel.r) + Math.abs(car.velx - playervel.x) > 10)
+                        car.hp -= (Math.abs((car.vely - playervel.y) + Math.abs(car.velr - playervel.r) + Math.abs(car.velx - playervel.x)) / 20)
+                }
+
+                if (mouseIsPressed) {
+                    if (mouseButton === CENTER) {
+                        if (car.y > playerpos.y) {
+                            if (Math.abs(car.x - playerpos.x) < 5 && (car.type == "car" || car.type == "police")) {
+                                car.hp -= 3
+                            }
+                            if (Math.abs(car.x - playerpos.x) < 20 && car.type == "truck") {
+                                car.hp -= 2
+                            }
+                            if (Math.abs(car.x - playerpos.x) < 5 && car.type == "military") {
+                                car.hp -= 2
+                            }
+                            if (Math.abs(car.x - playerpos.x) < 20 && car.type == "tank") {
+                                car.hp -= 1
+                            }
+
+                        }
+                    }
+
+                    if (mouseButton === RIGHT) {
+                        if (Math.abs(car.x - playerpos.x) < 50 && car.y > playerpos.y) {
+                            if (car.type == "car" || car.type == "police" || car.type == "military") {
+                                car.vely += (playervel.y / 5) - 0.3;
+                                car.velx += (playerpos.x - car.x) / 10;
+                                car.vely *= 0.8;
+                                car.velx *= 0.8;
+                                car.velr += (playervel.x / 10) + Math.random() * 2 - 1;
+                            }
+                            if (car.type == "truck") {
+                                car.vely += (playervel.y / 7) - 0.2;
+                                car.velx += (playerpos.x - car.x) / 20;
+                                car.vely *= 0.85;
+                                car.velx *= 0.85;
+                                car.velr += (playervel.x / 80);
+                            }
+                            if (car.type == "tank") {
+                                car.vely += (playervel.y / 35) - 0.1;
+                                car.velx += (playerpos.x - car.x) / 60;
+                                car.vely *= 0.85;
+                                car.velx *= 0.85;
+                                car.velr += (playervel.x / 160);
+                            }
+
+                        }
+                    }
+                }
+
+                car.x += car.velx;
+                car.y += car.vely;
+                car.r += car.velr;
+
+                if (car.y > (car.leftlane ? 544 : 524)) {
+                    if (Math.abs(car.vely) + Math.abs(car.velr) + (Math.abs(car.velx) / 5) > 5) {
+                        car.hp -= ((Math.abs(car.vely) * 3) + Math.abs(car.velr) + (Math.abs(car.velx / 10))) / 2
+                    }
+                    if (car.hp > 7 && car.r > -2 && car.r < 2) {
+                        car.velx *= 0.9;
+                    } else {
+                        car.velx *= 0.85;
+                    }
+                    car.velr *= 0.8;
+
+                    car.y = (car.leftlane ? 544 : 524);
+                    car.vely = -car.vely / 4;
+                }
+
+                if (car.hp > 7 && car.y >= (car.leftlane ? 544 : 524)) {
+                    if (car.r > -2 && car.r < 2) {
+                        if (discovered && car.type == "police" || car.type == "tank" || car.type == "military") {
+                            if (Math.abs(car.x - playerpos.x) > 200 && car.type == "tank") {
+                                if (car.x < playerpos.x) {
+                                    car.velx += 0.2
+                                } else {
+                                    car.velx += -0.2
+                                }
+                            }
+                            if (Math.abs(car.x - playerpos.x) > 50 && car.type == "police") {
+                                if (car.x < playerpos.x) {
+                                    car.velx += 0.4
+                                } else {
+                                    car.velx += -0.4
+                                }
+                            }
+                            if (Math.abs(car.x - playerpos.x) > 50 && car.type == "military") {
+                                if (car.x < playerpos.x) {
+                                    car.velx += 0.5
+                                } else {
+                                    car.velx += -0.5
+                                }
+                            }
+
+                        } else {
+                            car.velx += (car.leftlane ? 0.3 : -0.3);
+                        }
+                    }
+                    if (Math.abs(car.vely) < 1) {
+                        if (car.type == "car") {
+                            car.r *= 0.97;
+                        }
+                        if (car.type == "police" || car.type == "military") {
+                            car.r *= 0.9;
+                        }
+                        if (car.type == "truck") {
+                            car.r *= 0.99;
+                        }
+                        if (car.type == "tank") {
+                            car.r *= 0.95;
+                        }
+                    }
+                }
+
+                projectiles.forEach(projectile => {
+                    if (Math.abs(car.x - projectile.x) + Math.abs(car.y - projectile.y) < 50) {
+                        car.hp += -5;
+                        projectile.expired = true;
+                    }
+                });
+
+                if (car.hp <= 0) {
+                    if (car.type == "car") {
+                        score += 1;
+                        explosion(car.x, car.y, 5, 2, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, car.velx, car.vely);
+                    }
+                    if (car.type == "police") {
+                        score += 2;
+                        explosion(car.x, car.y, 5, 2, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, car.velx, car.vely);
+                    }
+                    if (car.type == "military") {
+                        score += 3;
+                        explosion(car.x, car.y, 5, 2, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, car.velx, car.vely);
+                    }
+                    if (car.type == "truck") {
+                        score += 2;
+                        explosion(car.x, car.y, 10, 4, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, car.velx, car.vely);
+                    }
+                    if (car.type == "tank") {
+                        explosion(car.x, car.y, 10, 4, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, car.velx, car.vely);
+                        score += 6;
+                    }
+                }
+            }
+            cars = cars.filter(car => car.hp > 0 && car.x < 2035 && car.x > -1301);
+        }
+        function mousePressed() {
+            if (mouseButton === LEFT) {
+                weaponeffect = 0.9;
+                projectiles.push({
+                    x: playerpos.x,
+                    y: playerpos.y,
+                    velx: playervel.x / 2,
+                    vely: (playervel.y / 10) + 10,
+                    expired: false
+                })
+                playervel.y -= 25;
+            }
+        }
+        function explosion(x, y, size, force, color1, color2, xvel = 0, yvel = 0) {
+            for (const car of cars) {
+                if ((Math.abs(x - car.x) + Math.abs(y - car.y)) < force * 25) {
+                    car.velx += (Math.random() * force - (force / 2)) * 2;
+                    car.velr += (Math.random() * force - (force / 2)) * 2;
+                    car.vely -= (Math.random() * (force / 2));
+                }
+            }
+            for (let i = 0; i < size * 10; i++) {
+                let a = Math.random() * Math.PI * 2
+                explosionparticles.push({
+                    color1: color1,
+                    color2: color2,
+                    x: x,
+                    y: y,
+                    velx: Math.cos(a) * size * Math.random() + xvel * (Math.random() * 0.9 + 0.1),
+                    vely: Math.sin(a) * size * Math.random() + yvel * (Math.random() * 0.9 + 0.1),
+                    age: 0,
+                    lifespan: Math.random() * (size / 10) + 0.1,
+                    temp: Math.random() > 0.2,
+                    size: size * Math.random() * 0.5 + 1,
+                    force: force * Math.random() * 0.5 + 1,
+                })
+            }
+        }
+        function drawexplosionparticle() {
+            noStroke();
+            for (const particle of explosionparticles) {
+                if (particle.temp) {
+                    fill(`rgba(${particle.color1.r},${particle.color1.g},${particle.color1.b}, ${1 - (particle.age / particle.lifespan)})`);
+                }
+                else {
+                    fill(`rgba(${particle.color2.r},${particle.color2.g},${particle.color2.b}, ${1 - (particle.age / particle.lifespan)})`);
+                }
+                circle(particle.x - campos.x, particle.y - campos.y, particle.force * 6)
+
+            }
+        }
+        function drawbeam() {
+            noStroke();
+            fill("rgba(255, 187, 0, 0.1)");
+            rect(playerpos.x - campos.x - 12, playerpos.y - campos.y, 25, -(playerpos.y - 544))
+        }
+        function drawlaser() {
+            noStroke();
+            fill("#FF0000");
+            rect(playerpos.x - campos.x - 3, playerpos.y - campos.y, 6, -(playerpos.y - 544))
+            fill("#FF5E5E");
+            rect(playerpos.x - campos.x - 1, playerpos.y - campos.y, 2, -(playerpos.y - 544))
+            fill("#FF0000");
+            circle(playerpos.x - campos.x, 544, (Math.random(tijd) * 20 + 10) * (playerpos.y / 300 + 1))
+            fill("#FF5E5E");
+            circle(playerpos.x - campos.x, 544, (Math.random(tijd) * 20 + 10) * (playerpos.y / 300 + 1) / 2)
+        }
+        function drawprojectile() {
+            for (const projectile of projectiles) {
+                //schaduw
+                noStroke();
+                fill("rgba(0,0,0,0.1)");
+                ellipse(projectile.x - campos.x, 544 - campos.y, (Math.sin(tijd / 30) * 4 + 10), (Math.sin(tijd / 30) * 4 + 10) / 2);
+                if (Math.sin(tijd / 30) > 0) {
+                    fill("#AE00FF");
+                }
+                else {
+                    fill("#FFFFFF");
+                }
+                //bal
+                circle(projectile.x - campos.x, projectile.y - campos.y, (Math.sin(tijd / 30) * 4 + 10));
+            }
+
+        }
+        function drawSterretjes() {
+            fill("#FFFFFF");
+            for (const star of stars) {
+                circle(star.x - campos.x / 10, star.y - campos.y, star.size)
+            }
+
+        }
+        function drawgebouwen() {
+            fill(50)
+            for (const building of buildings) {
+                rect(building.x - campos.x / building.depth, building.y - campos.y, building.sizex, building.sizey)
+            }
+        }
+        function drawstreetlines() {
+            fill("#E0A347")
+            for (const streetline of streetlines) {
+                rect(streetline.x - campos.x, streetline.y - campos.y, 40, 1)
+            }
+        }
+
+        function drawbullet() {
+            for (const bullet of bullets) {
+                if (Math.sin(tijd / 50) > 0.5) {
+                    fill(`rgb(${bullet.color1.r},${bullet.color1.g},${bullet.color1.b})`);
+                } else {
+                    fill(`rgb(${bullet.color2.r},${bullet.color2.g},${bullet.color2.b})`);
+                }
+                circle(bullet.x - campos.x, bullet.y - campos.y, bullet.size)
+            }
+        }
+
+        function drawhuman() {
+            for (const human of humans) {
+                noStroke()
+                //schaduw
+                //human
+                translate(human.x - campos.x, human.y - campos.y)
+                rotate(human.r * 0.01745329252)
+                colorMode(HSB)
+                fill(human.hue, 90, 60)
+                triangle(-6, 6, 0, -4, 6, 6)
+                fill("#CC7F63")
+                circle(0, 6, 4)
+                resetMatrix();
+            }
+
+        }
+
+        function drawcar() {
+            function drawing(car) {
+                //schaduw
+                noStroke();
+                fill("rgba(0,0,0,0.1)");
+                if (car.type == "car" || car.type == "police" || car.type == "military") {
+                    ellipse(car.x - campos.x, (car.leftlane ? 544 : 524) + 13 - campos.y, 25, 10);
+                }
+                if (car.type == "truck" || car.type == "tank") {
+                    ellipse(car.x - campos.x, (car.leftlane ? 544 : 524) + 13 - campos.y, 75, 10);
+                }
+
+                //car
+                translate(car.x - campos.x, car.y - campos.y)
+                rotate(car.r * 0.01745329252)
+                if (!car.leftlane) {
+                    scale(-1, 1)
+                }
+
+                if (car.type == "car") {
+                    fill("#161616")
+                    circle(-9, 12, 8)
+                    circle(9, 12, 8)
+
+                    colorMode(HSB)
+                    fill(car.hue, 90, 60)
+                    if (car.hp < 7) {
+                        fill(car.hue, 90, 40)
+                    }
+                    rect(-10, -10, 20, 20)
+                    rect(-15, 0, 30, 10)
+                    colorMode(RGB)
+                }
+
+                if (car.type == "truck") {
+                    fill("#161616")
+                    circle(-21, 12, 8)
+                    circle(20, 12, 8)
+                    colorMode(HSB)
+
+                    fill(car.hue, 90, 60)
+                    if (car.hp < 7) {
+                        fill(car.hue, 90, 40)
+                    }
+                    rect(13, -9, 19, 19)
+
+                    colorMode(RGB)
+                    fill("#777777")
+                    if (car.hp < 7) {
+                        fill("#636363")
+                    }
+                    rect(-29, -14, 42, 23)
+                }
+
+                if (car.type == "police") {
+                    fill("#161616")
+                    circle(-9, 12, 8)
+                    circle(9, 12, 8)
+
+                    colorMode(RGB);
+                    fill("#161616")
+                    if (car.hp < 7) {
+                        fill("#070707")
+                    }
+                    rect(-15, 0, 30, 10)
+                    fill("#161616")
+                    if (car.hp < 7) {
+                        fill("#070707")
+                    }
+                    rect(-10, -10, 20, 20)
+                    fill("#D3D3D3")
+                    if (car.hp < 7) {
+                        fill("#898989")
+                    }
+                    rect(-8, -9, 16, 18)
+
+                    if (discovered && car.hp >= 7) {
+                        if (Math.sin(tijd / 100) > 0) {
+                            fill("#FF003E");
+                        } else {
+                            fill("#0043FF");
+                        }
+                    } else {
+                        fill("#5B5B5B");
+                    }
+
+                    circle(0, -12, 5);
+                }
+
+                if (car.type == "military") {
+                    fill("#161616")
+                    circle(-9, 12, 8)
+                    circle(9, 12, 8)
+
+                    colorMode(HSB)
+                    fill("#47561C")
+                    if (car.hp < 7) {
+                        fill("#39421B")
+                    }
+                    rect(-10, -10, 20, 20)
+                    rect(-15, 0, 30, 10)
+                    colorMode(RGB)
+                }
+
+                if (car.type == "tank") {
+                    // colorMode(RGB)
+                    // fill("#161616")
+                    // quad(-28, 3, 28, 3, 21, 12, -21, 12, 20)
+                    // fill("#47561C")
+                    // if (car.hp < 7) {
+                    //     fill("#39421B")
+                    // }
+                    // rect(-32, -7, 65, 14)
+                    // rect(-25, -17, 31, 11)
+                    colorMode(RGB)
+                    fill("#161616")
+                    quad(-31, 10, 31, 10, 27, 15, -27, 15)
+                    fill("#47561C")
+                    if (car.hp < 7) {
+                        fill("#39421B")
+                    }
+                    quad(-29, -3, 13, -3, 33, 5, -32, 10)
+                    rect(-32, 5, 65, 5)
+                    quad(-25, -6, 7, -12, 7, -3, -19, -3)
+                    rect(-25, -12, 31, 7)
+
+                    stroke("#47561C");
+                    strokeWeight(2);
+                    let direction = { x: car.x - playerpos.x, y: -(car.y - playerpos.y) }
+                    if (car.leftlane) {
+                        direction.x *= -1
+                    }
+                    let length = getlength(direction)
+                    line(4, -9, direction.x / length * 30 + 4, direction.y / length * 30 - 9)
+                    noStroke();
+                }
+                resetMatrix();
+            }
+            for (const car of cars) {
+                if (!car.leftlane)
+                    drawing(car)
+            }
+            for (const car of cars) {
+                if (car.leftlane)
+                    drawing(car)
+            }
+        }
+        function drawtext(x, y, textsize, textstring, color, textfont) {
+            textSize(textsize);
+            fill(color);
+            textFont(textfont);
+            text(textstring, x, y);
+        }
+
+        function drawUFO() {
+            //schaduw
+            if (discovered) {
+                fill("rgba(0,0,0,0.1)");
+                fill("rgba(0,0,0,0.1)");
+                ellipse(playerpos.x - campos.x, 544 - campos.y, 50, 25);
+            }
+            //ufo
+            translate(playerpos.x - campos.x, playerpos.y - campos.y)
+            rotate(playerpos.r * 0.01745329252)
+            noStroke();
+            if (discovered) {
+                fill("#606060");
+            } else {
+                strokeWeight(1);
+                stroke("rgba(0,255,255,0.1)");
+                fill("rgba(0,0,0,0)");
+            }
+            ellipse(0, 0, 55, 20);
+
+            if (discovered) {
+                noStroke();
+                fill("#9EFF75");
+            } else {
+                strokeWeight(1);
+                stroke("rgba(0,255,255,0.1)");
+                fill("rgba(0,0,0,0)");
+            }
+            circle(0, -10, 20);
+            if (weaponeffect > 0.1) {
+                weaponeffect -= 0.05
+            } else {
+                weaponeffect = 0
+            }
+
+            if (discovered) {
+                if ((mouseIsPressed) && mouseButton === LEFT) {
+                    weaponcolor.r = 174;
+                    weaponcolor.g = 0;
+                    weaponcolor.b = 255;
+                }
+                if ((mouseIsPressed) && mouseButton === RIGHT) {
+                    weaponeffect = 1;
+                    weaponcolor.r = 255;
+                    weaponcolor.g = 209;
+                    weaponcolor.b = 94;
+                }
+                if ((mouseIsPressed) && mouseButton === CENTER) {
+                    weaponeffect = 1;
+                    weaponcolor.r = 255;
+                    weaponcolor.g = 48;
+                    weaponcolor.b = 0;
+                }
+            } else {
+                weaponeffect = 0
+            }
+            fill(`rgba(${weaponcolor.r}, ${weaponcolor.g}, ${weaponcolor.b}, ${weaponeffect})`)
+            circle(0, -10, 20);
+            resetMatrix();
+            if (discovered) {
+
+            }
+
+        }
+        function draw() {
+            update();
+            background("#273351");
+            drawSterretjes();
+            drawgebouwen();
+            noStroke();
+            fill("#444444");
+            rect(0, 526 - campos.y, 800, 500);
+            drawstreetlines();
+            if (mouseIsPressed) {
+                if (mouseButton === RIGHT) {
+                    drawbeam();
+                }
+            }
+
+            drawhuman();
+            drawcar();
+
+            if (mouseIsPressed) {
+                if (mouseButton === CENTER) {
+                    drawlaser();
+                    playervel.x += Math.random() * 8 - 4;
+                    playervel.y += (Math.random() * 8 - 4) - 4;
+                    playervel.r += (Math.random() * 2 - 1);
+                }
+            }
+
+            drawbullet();
+            drawUFO();
+            drawprojectile();
+            drawexplosionparticle();
+            drawtext(36, 63, 25, `score = ${score}`, "white", "impact");
+            drawtext(36, 83, 25, `health = ${health}`, "green", "impact");
+            drawtext(36, 103, 25, `shield = ${Math.floor(shield)}`, "blue", "impact");
+            drawtext(36, 123, 25, `shield = ${(weaponeffect)}`, "blue", "impact");
+        }
+    </script>
+</body>
+
+</html>
