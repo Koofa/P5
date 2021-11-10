@@ -145,12 +145,12 @@
                     }
                 }
                 if (score < 300 || (score < 700 && Math.random() > 0.9)) {
-                    if (Math.random > 0.5) {
+                    if (Math.random() > 0.5) {
                         humans.push({
                             leftlane: leftlane,
                             hue: Math.random() * 360,
                             x: leftlane ? -1300 : 2031,
-                            y: 544,
+                            y: 580,
                             hp: 1,
                             velx: 0,
                             vely: 0,
@@ -221,6 +221,9 @@
 
             //bullets
             for (const bullet of bullets) {
+                bullet.x += bullet.xvel;
+                bullet.y += bullet.yvel;
+                bullet.yvel += bullet.weight / 100;
                 if (Math.abs(playerpos.y - bullet.y) + Math.abs(playerpos.x - bullet.x) < 60)
                     if (shield > 0) {
                         shield -= bullet.damage;
@@ -229,12 +232,9 @@
                     } else {
                         if (Math.abs(playerpos.y - bullet.y) + Math.abs(playerpos.x - bullet.x) < 20)
                             health -= bullet.damage;
-                        bullets = bullets.filter(bullet => Math.abs(bullet.y - playerpos.y) + Math.abs(bullet.x - playerpos.x) > 20);
                     }
-                bullet.x += bullet.xvel;
-                bullet.y += bullet.yvel;
-                bullet.yvel += bullet.weight / 100;
             }
+            bullets = bullets.filter(bullet => Math.abs(bullet.y - playerpos.y) + Math.abs(bullet.x - playerpos.x) > 20);
             bullets = bullets.filter(bullet => bullet.y < 564 && bullet.y > -50 && bullet.x > -1207 && bullet.x < 2011);
             // if (shield > 0) {
 
@@ -257,6 +257,7 @@
             for (const human of humans) {
                 updatehuman(human);
             }
+            humans = humans.filter(human => human.hp > 0 && human.x < 2035 && human.x > -1301);
 
             //projuytilebehociour
             for (const projectile of projectiles) {
@@ -271,36 +272,33 @@
             }
             projectiles = projectiles.filter(projectile => projectile.y < 544 && !projectile.expired);
         }
+
         function updatehuman(human) {
             human.vely += 0.1;
             human.velr *= 0.99;
 
-            if ((Math.abs(human.x - playerpos.x) + Math.abs(human.y - playerpos.y)) < 25) {
+            if ((Math.abs(human.x - playerpos.x) + Math.abs(human.y - playerpos.y)) < 5) {
                 human.velx += playervel.x / 5;
                 human.vely += playervel.y / 5;
                 if ((human.vely - playervel.y) + Math.abs(human.velr - playervel.r) + Math.abs(human.velx - playervel.x) > 2)
                     human.hp -= Math.abs((human.vely - playervel.y) + Math.abs(human.velr - playervel.r) + Math.abs(human.velx - playervel.x))
             }
+
             if (mouseIsPressed) {
-                if (mouseButton === CENTER) {
-                    if (car.y > playerpos.y) {
-                        if (Math.abs(car.x - playerpos.x) < 2) {
-                            human.hp -= 10
-                        }
-
-                    }
+                if (mouseButton === CENTER && human.y > playerpos.y && Math.abs(human.x - playerpos.x) < 2) {
+                    human.hp -= 10
                 }
-
                 if (mouseButton === RIGHT) {
-                    if (Math.abs(car.x - playerpos.x) < 50 && car.y > playerpos.y) {
+                    if (Math.abs(human.x - playerpos.x) < 50 && human.y > playerpos.y) {
                         human.vely += (playervel.y / 2) - 0.5;
-                        human.velx += (playerpos.x - car.x) / 5;
+                        human.velx += (playerpos.x - human.x) / 5;
                         human.vely *= 0.8;
                         human.velx *= 0.8;
                         human.velr += (playervel.x / 10) + Math.random() * 2 - 1;
                     }
                 }
             }
+
             human.x += human.velx;
             human.y += human.vely;
             human.r += human.velr;
@@ -309,7 +307,7 @@
                 if (Math.abs(human.vely) + Math.abs(human.velr) + (Math.abs(human.velx) / 5) > 5) {
                     human.hp -= ((Math.abs(human.vely) * 3) + Math.abs(human.velr) + (Math.abs(human.velx / 10))) / 2
                 }
-                if (human.hp > 7 && human.r > -2 && human.r < 2) {
+                if (human.hp > 0.7 && human.r > -2 && human.r < 2) {
                     human.velx *= 0.9;
                 } else {
                     human.velx *= 0.85;
@@ -319,7 +317,7 @@
                 human.y = 580;
                 human.vely = -human.vely / 2;
             }
-            if (human.hp > 7 && human.y >= 580) {
+            if (human.hp > 0.7 && human.y >= 580) {
                 if (human.r > -2 && human.r < 2) {
                     human.velx += (human.leftlane ? 0.1 : -0.1);
                 }
@@ -336,7 +334,6 @@
             if (human.hp <= 0) {
                 score += 0.5;
             }
-            humans = humans.filter(human => human.hp > 0 && human.x < 2035 && human.x > -1301);
         }
         function updatecar() {
 
@@ -385,8 +382,8 @@
                 }
 
                 if ((Math.abs(car.x - playerpos.x) + Math.abs(car.y - playerpos.y)) < 25) {
-                    car.velx += playervel.x / 5;
-                    car.vely += playervel.y / 5;
+                    car.velx += (car.velx - playervel.x) / 5;
+                    car.vely += (car.vely - playervel.y) / 5;
                     if ((car.vely - playervel.y) + Math.abs(car.velr - playervel.r) + Math.abs(car.velx - playervel.x) > 10)
                         car.hp -= (Math.abs((car.vely - playervel.y) + Math.abs(car.velr - playervel.r) + Math.abs(car.velx - playervel.x)) / 20)
                 }
@@ -660,7 +657,7 @@
                 fill(human.hue, 90, 60)
                 triangle(-6, 6, 0, -4, 6, 6)
                 fill("#CC7F63")
-                circle(0, 6, 4)
+                circle(0, -6, 6)
                 resetMatrix();
             }
 
@@ -918,7 +915,6 @@
             drawtext(36, 63, 25, `score = ${score}`, "white", "impact");
             drawtext(36, 83, 25, `health = ${health}`, "green", "impact");
             drawtext(36, 103, 25, `shield = ${Math.floor(shield)}`, "blue", "impact");
-            drawtext(36, 123, 25, `shield = ${(weaponeffect)}`, "blue", "impact");
         }
     </script>
 </body>
