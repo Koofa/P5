@@ -278,8 +278,8 @@
             human.velr *= 0.99;
 
             if ((Math.abs(human.x - playerpos.x) + Math.abs(human.y - playerpos.y)) < 5) {
-                human.velx += playervel.x / 5;
-                human.vely += playervel.y / 5;
+                human.velx += -(human.velx - playervel.x) / 5 / 5;
+                human.vely += -(human.velx - playervel.x) / 5 / 5;
                 if ((human.vely - playervel.y) + Math.abs(human.velr - playervel.r) + Math.abs(human.velx - playervel.x) > 2)
                     human.hp -= Math.abs((human.vely - playervel.y) + Math.abs(human.velr - playervel.r) + Math.abs(human.velx - playervel.x))
             }
@@ -333,6 +333,7 @@
             });
             if (human.hp <= 0) {
                 score += 0.5;
+                explosion(human.x, human.y, 1, 1, { r: 255, g: 0, b: 0 }, { r: 255, g: 0, b: 0 }, human.velx, human.vely);
             }
         }
         function updatecar() {
@@ -382,8 +383,8 @@
                 }
 
                 if ((Math.abs(car.x - playerpos.x) + Math.abs(car.y - playerpos.y)) < 25) {
-                    car.velx += (car.velx - playervel.x) / 5;
-                    car.vely += (car.vely - playervel.y) / 5;
+                    car.velx += -(car.velx - playervel.x) / 5;
+                    car.vely += -(car.vely - playervel.y) / 5;
                     if ((car.vely - playervel.y) + Math.abs(car.velr - playervel.r) + Math.abs(car.velx - playervel.x) > 10)
                         car.hp -= (Math.abs((car.vely - playervel.y) + Math.abs(car.velr - playervel.r) + Math.abs(car.velx - playervel.x)) / 20)
                 }
