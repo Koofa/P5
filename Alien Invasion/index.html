@@ -18,7 +18,7 @@
     <!-- <script src="sounds.js"></script> -->
     <script>
         function getlength(vector) {
-            return Math.sqrt(vector.x * vector.x + vector.y * vector.y) 
+            return Math.sqrt(vector.x * vector.x + vector.y * vector.y)
         }
         window.addEventListener('contextmenu', e => {
             e.preventDefault();
@@ -146,7 +146,7 @@
             }
             bullets = bullets.filter(bullet => Math.abs(bullet.y - playerpos.y) + Math.abs(bullet.x - playerpos.x) > 20);
             bullets = bullets.filter(bullet => bullet.y < 564 && bullet.y > -50 && bullet.x > -1207 && bullet.x < 2011);
-            
+
             //explosoirn
             for (const particle of explosionparticles) {
                 particle.velx *= 0.9;
@@ -198,22 +198,24 @@
             }
         }
         function explosion(x, y, size, force, color1, color2, xvel = 0, yvel = 0) {
-            camshakeVel.x += (Math.random() * force - force / 2);
-            camshakeVel.y += (Math.random() * force - force / 2);
+            camshakeVel.x += (Math.random() * force - force / 2) / 2;
+            camshakeVel.y += (Math.random() * force - force / 2) / 2;
             for (const car of cars) {
-                if ((Math.abs(x - car.x) + Math.abs(y - car.y)) < size * 10) {
-                    car.velx += (Math.random() * size - (size / 2));
-                    car.velr += (Math.random() * size - (size / 2));
-                    car.vely -= (Math.random() * (size / 2));
-                    car.hp -= force / 20
+                if ((Math.abs(x - car.x) + Math.abs(y - car.y)) < (size + force) * 10) {
+                    let positions = {x: car.x - x, y: car.y - y}
+                    car.velx += ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2) / 2;
+                    car.velr += ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2) / 2;
+                    car.vely -= ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2) / 2;
+                    car.hp -= force / (getlength(positions) / 10)
                 }
             }
             for (const human of humans) {
-                if ((Math.abs(x - human.x) + Math.abs(y - human.y)) < size * 10) {
-                    human.velx += (Math.random() * size - (size / 2));
-                    human.velr += (Math.random() * size - (size / 2));
-                    human.vely -= (Math.random() * (size / 2));
-                    human.hp -= force / 20
+                if ((Math.abs(x - human.x) + Math.abs(y - human.y)) < (size + force) * 10) {
+                    let positions = {x: human.x - x, y: human.y - y}
+                    human.velx += ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2);
+                    human.velr += ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2);
+                    human.vely -= ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2);
+                    human.hp -= force / (getlength(positions) / 10)
                 }
             }
             for (let i = 0; i < size * 10; i++) {
@@ -403,8 +405,8 @@
             if (mouseIsPressed) {
                 if (mouseButton === CENTER) {
                     drawlaser();
-                    camshakeVel.x += (Math.random() - 0.5) /2
-                    camshakeVel.y += (Math.random() - 0.5) /2
+                    camshakeVel.x += (Math.random() - 0.5) / 2
+                    camshakeVel.y += (Math.random() - 0.5) / 2
                     playervel.x += Math.random() * 8 - 4;
                     playervel.y += (Math.random() * 8 - 4) - 4;
                     playervel.r += (Math.random() * 2 - 1);

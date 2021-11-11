@@ -36,7 +36,7 @@ function updatecar() {
                 damage: 6
             })
         }
-        if (car.type == "tank" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.99 && Math.sin(tijd / 100) > 0.9) {
+        if (car.type == "tank" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.95 && Math.sin(tijd / 100) > 0.9) {
             bullets.push({
                 x: car.x,
                 y: car.y,
