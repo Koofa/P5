@@ -38,6 +38,8 @@
         let tijd = 0
         let weaponeffect = 0
         let weaponcolor = { r: 0, g: 0, b: 0 }
+        let camshakeVel = { x: 0, y: 0 }
+        let camshakePos = { x: 0, y: 0 }
         const cartypes = ["car", "truck", "police", "tank"]
         function setup() {
             createCanvas(800, 600);
@@ -64,7 +66,7 @@
                     y: 544,
                 })
             }
-            for (let i = 0; i < 600; i++) {
+            for (let i = 0; i < 4000; i++) {
                 update();
             }
         }
@@ -77,14 +79,23 @@
             playervel.y *= 0.4;
             playervel.r *= 0.9;
             playerpos.r *= 0.6;
-            playerpos.x += playervel.x
-            playerpos.y += playervel.y
-            playerpos.r += playervel.r
+            playerpos.x += playervel.x;
+            playerpos.y += playervel.y;
+            playerpos.r += playervel.r;
 
+            camshakeVel.x += -camshakePos.x / 4
+            camshakeVel.y += -camshakePos.y / 4
+            camshakeVel.x *= 0.9;
+            camshakeVel.y *= 0.9;
+            camshakePos.x += camshakeVel.x;
+            camshakePos.y += camshakeVel.y;
+            campos.x += camshakePos.x;
+            campos.y += camshakePos.y;
             camvel.x *= 0.93;
             camvel.y *= 0.93;
-            campos.x += camvel.x
-            campos.y += camvel.y
+            campos.x += camvel.x;
+            campos.y += camvel.y;
+
 
             if (score >= 5) {
                 discovered = true;
@@ -95,11 +106,15 @@
             if (keyIsDown(65))
                 camvel.x += -1;
 
-            if (shield < 100) {
+            if (shield < 100)
                 shield += 0.1;
+
+            if (health < 25 && Math.random() > 0.95) {
+                playervel.x += Math.random() * 4 - 2;
+                playervel.y += Math.random() * 4 - 2;
+                explosion(playerpos.x - (Math.random() * 40 - 20), playerpos.y - (Math.random() * 20 - 10), 1, 1, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, playervel.x, playervel.y)
             }
-
-
+            //SPAWNING
             if (Math.random() > 0.97) {
                 let leftlane = Math.random() > 0.5
                 if (score > 250 && Math.random() > 0.5) {
@@ -150,7 +165,7 @@
                             leftlane: leftlane,
                             hue: Math.random() * 360,
                             x: leftlane ? -1300 : 2031,
-                            y: 580,
+                            y: 520,
                             hp: 1,
                             velx: 0,
                             vely: 0,
@@ -213,12 +228,6 @@
                 playervel.y = 0;
             }
 
-            // if (mouseIsPressed) {
-            //     if (mouseButton === CENTER) {
-            //         explosion(playerpos.x, 544, playerpos.y / 80 + 1, 0, { r: 255, g: 0, b: 0 }, { r: 255, g: 94, b: 94 });
-            //     }
-            // }
-
             //bullets
             for (const bullet of bullets) {
                 bullet.x += bullet.xvel;
@@ -236,13 +245,6 @@
             }
             bullets = bullets.filter(bullet => Math.abs(bullet.y - playerpos.y) + Math.abs(bullet.x - playerpos.x) > 20);
             bullets = bullets.filter(bullet => bullet.y < 564 && bullet.y > -50 && bullet.x > -1207 && bullet.x < 2011);
-            // if (shield > 0) {
-
-            // } else {
-            //     
-            // }
-
-
             //explosoirn
             for (const particle of explosionparticles) {
                 particle.velx *= 0.9;
@@ -254,6 +256,7 @@
             explosionparticles = explosionparticles.filter(particle => particle.age < particle.lifespan);
 
             updatecar();
+
             for (const human of humans) {
                 updatehuman(human);
             }
@@ -274,23 +277,26 @@
         }
 
         function updatehuman(human) {
+            if ((Math.abs(human.x - playerpos.x) + Math.abs(human.y - playerpos.y)) < 30) {
+                if ((human.vely - playervel.y) + Math.abs(human.velr - playervel.r) + Math.abs(human.velx - playervel.x) > 2)
+                    human.hp -= (Math.abs((human.vely - playervel.y) + Math.abs(human.velr - playervel.r) + Math.abs(human.velx - playervel.x)) / 40)
+                human.velx += -(human.velx - playervel.x) / 4;
+                human.vely += -(human.vely - playervel.y) / 4;
+                human.velr += -(human.velr - playervel.r) / 4;
+                if (mouseIsPressed && mouseButton === RIGHT) {
+                    human.hp -= 10
+                }
+            }
             human.vely += 0.1;
             human.velr *= 0.99;
-
-            if ((Math.abs(human.x - playerpos.x) + Math.abs(human.y - playerpos.y)) < 5) {
-                human.velx += -(human.velx - playervel.x) / 5 / 5;
-                human.vely += -(human.velx - playervel.x) / 5 / 5;
-                if ((human.vely - playervel.y) + Math.abs(human.velr - playervel.r) + Math.abs(human.velx - playervel.x) > 2)
-                    human.hp -= Math.abs((human.vely - playervel.y) + Math.abs(human.velr - playervel.r) + Math.abs(human.velx - playervel.x))
-            }
 
             if (mouseIsPressed) {
                 if (mouseButton === CENTER && human.y > playerpos.y && Math.abs(human.x - playerpos.x) < 2) {
                     human.hp -= 10
                 }
                 if (mouseButton === RIGHT) {
-                    if (Math.abs(human.x - playerpos.x) < 50 && human.y > playerpos.y) {
-                        human.vely += (playervel.y / 2) - 0.5;
+                    if (Math.abs(human.x - playerpos.x) < 30 && human.y > playerpos.y) {
+                        human.vely += (playervel.y / 4) - 0.5;
                         human.velx += (playerpos.x - human.x) / 5;
                         human.vely *= 0.8;
                         human.velx *= 0.8;
@@ -303,7 +309,7 @@
             human.y += human.vely;
             human.r += human.velr;
 
-            if (human.y > 580) {
+            if (human.y > 520) {
                 if (Math.abs(human.vely) + Math.abs(human.velr) + (Math.abs(human.velx) / 5) > 5) {
                     human.hp -= ((Math.abs(human.vely) * 3) + Math.abs(human.velr) + (Math.abs(human.velx / 10))) / 2
                 }
@@ -314,12 +320,17 @@
                 }
                 human.velr *= 0.8;
 
-                human.y = 580;
+                human.y = 520;
                 human.vely = -human.vely / 2;
             }
-            if (human.hp > 0.7 && human.y >= 580) {
+            if (human.hp > 0.7 && human.y >= 520) {
                 if (human.r > -2 && human.r < 2) {
-                    human.velx += (human.leftlane ? 0.1 : -0.1);
+                    if (discovered) {
+                        human.velx += (human.leftlane ? 0.2 : -0.2);
+                    } else {
+                        human.velx += (human.leftlane ? 0.05 : -0.05);
+                    }
+
                 }
                 if (Math.abs(human.vely) < 1) {
                     human.r *= 0.97;
@@ -328,7 +339,6 @@
             projectiles.forEach(projectile => {
                 if (Math.abs(human.x - projectile.x) + Math.abs(human.y - projectile.y) < 50) {
                     human.hp += -5;
-                    projectile.expired = true;
                 }
             });
             if (human.hp <= 0) {
@@ -339,6 +349,13 @@
         function updatecar() {
 
             for (const car of cars) {
+                if ((Math.abs(car.x - playerpos.x) + Math.abs(car.y - playerpos.y)) < 30) {
+                    if ((car.vely - playervel.y) + Math.abs(car.velr - playervel.r) + Math.abs(car.velx - playervel.x) > 10)
+                        car.hp -= (Math.abs((car.vely - playervel.y) + Math.abs(car.velr - playervel.r) + Math.abs(car.velx - playervel.x)) / 50)
+                    car.velx += -(car.velx - playervel.x) / 10;
+                    car.vely += -(car.vely - playervel.y) / 10;
+                    car.velr += -(car.velr - playervel.r) / 10;
+                }
                 car.vely += 0.1;
                 car.velr *= 0.99;
 
@@ -355,7 +372,7 @@
                         damage: 6
                     })
                 }
-                if (car.type == "military" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.92 && Math.sin(tijd / 100) > 0.5) {
+                if (car.type == "military" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.92 && Math.sin(tijd / 200) > 0.5) {
                     bullets.push({
                         x: car.x,
                         y: car.y,
@@ -380,13 +397,6 @@
                         color2: { r: 255, g: 255, b: 255 },
                         damage: 50
                     })
-                }
-
-                if ((Math.abs(car.x - playerpos.x) + Math.abs(car.y - playerpos.y)) < 25) {
-                    car.velx += -(car.velx - playervel.x) / 5;
-                    car.vely += -(car.vely - playervel.y) / 5;
-                    if ((car.vely - playervel.y) + Math.abs(car.velr - playervel.r) + Math.abs(car.velx - playervel.x) > 10)
-                        car.hp -= (Math.abs((car.vely - playervel.y) + Math.abs(car.velr - playervel.r) + Math.abs(car.velx - playervel.x)) / 20)
                 }
 
                 if (mouseIsPressed) {
@@ -546,11 +556,22 @@
             }
         }
         function explosion(x, y, size, force, color1, color2, xvel = 0, yvel = 0) {
+            camshakeVel.x += (Math.random() * force - force / 2) * .5;
+            camshakeVel.y += (Math.random() * force - force / 2) * .5;
             for (const car of cars) {
-                if ((Math.abs(x - car.x) + Math.abs(y - car.y)) < force * 25) {
-                    car.velx += (Math.random() * force - (force / 2)) * 2;
-                    car.velr += (Math.random() * force - (force / 2)) * 2;
-                    car.vely -= (Math.random() * (force / 2));
+                if ((Math.abs(x - car.x) + Math.abs(y - car.y)) < size * 10) {
+                    car.velx += (Math.random() * size - (size / 2));
+                    car.velr += (Math.random() * size - (size / 2));
+                    car.vely -= (Math.random() * (size / 2));
+                    car.hp -= force / 20
+                }
+            }
+            for (const human of humans) {
+                if ((Math.abs(x - human.x) + Math.abs(y - human.y)) < size * 10) {
+                    human.velx += (Math.random() * size - (size / 2));
+                    human.velr += (Math.random() * size - (size / 2));
+                    human.vely -= (Math.random() * (size / 2));
+                    human.hp -= force / 20
                 }
             }
             for (let i = 0; i < size * 10; i++) {
@@ -888,6 +909,8 @@
             drawSterretjes();
             drawgebouwen();
             noStroke();
+            fill("#5B5B5B");
+            rect(0, 515 - campos.y, 800, 500);
             fill("#444444");
             rect(0, 526 - campos.y, 800, 500);
             drawstreetlines();
@@ -916,6 +939,7 @@
             drawtext(36, 63, 25, `score = ${score}`, "white", "impact");
             drawtext(36, 83, 25, `health = ${health}`, "green", "impact");
             drawtext(36, 103, 25, `shield = ${Math.floor(shield)}`, "blue", "impact");
+            drawtext(36, 123, 25, `shield = ${camshakeVel.x}`, "blue", "impact");
         }
     </script>
 </body>
