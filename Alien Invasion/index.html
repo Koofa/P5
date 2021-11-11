@@ -5,17 +5,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ik ben gek</title>
+    <title>alien invasion</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"
         integrity="sha512-N4kV7GkNv7QR7RX9YF/olywyIgIwNvfEe2nZtfyj73HdjCUkAfOBDbcuJ/cTaN04JKRnw1YG1wnUyNKMsNgg3g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.js"
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.js"
         integrity="sha512-U2sgwrFhl+Tgx9iGH9h5Ba2WyIjyCes+D0prtIFw3a0V+/fkaeL5Cd/VjyPHno9kUPE1rnNhBGTyvtZsfJp0xg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 </head>
 
 <body>
-    <script src="sounds.js"></script>
+    <!-- <script src="sounds.js"></script> -->
     <script>
         function getlength(vector) {
             return Math.sqrt(vector.x * vector.x + vector.y * vector.y) 
@@ -116,109 +116,8 @@
                 playervel.y += Math.random() * 4 - 2;
                 explosion(playerpos.x - (Math.random() * 40 - 20), playerpos.y - (Math.random() * 20 - 10), 1, 1, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, playervel.x, playervel.y)
             }
-            //SPAWNING
-            if (Math.random() > 0.97) {
-                let leftlane = Math.random() > 0.5
-                if (score > 250 && Math.random() > 0.5) {
-                    cars.push({
-                        type: "police",
-                        leftlane: leftlane,
-                        hue: Math.random() * 360,
-                        x: leftlane ? -1300 : 2031,
-                        y: 544,
-                        hp: 12,
-                        velx: 0,
-                        vely: 0,
-                        r: 0,
-                        velr: 0
-                    })
-                    if (Math.random() > 0.9 && score > 500) {
-                        cars.push({
-                            type: "tank",
-                            leftlane: leftlane,
-                            hue: Math.random() * 360,
-                            x: leftlane ? -1300 : 2031,
-                            y: 544,
-                            hp: 35,
-                            velx: 0,
-                            vely: 0,
-                            r: 0,
-                            velr: 0
-                        })
-                    }
-                    if (Math.random() > 0.5) {
-                        cars.push({
-                            type: "military",
-                            leftlane: leftlane,
-                            hue: Math.random() * 360,
-                            x: leftlane ? -1300 : 2031,
-                            y: 544,
-                            hp: 20,
-                            velx: 0,
-                            vely: 0,
-                            r: 0,
-                            velr: 0
-                        })
-                    }
-                }
-                if (score < 300 || (score < 700 && Math.random() > 0.9)) {
-                    if (Math.random() > 0.5) {
-                        humans.push({
-                            leftlane: leftlane,
-                            hue: Math.random() * 360,
-                            x: leftlane ? -1300 : 2031,
-                            y: 520,
-                            hp: 1,
-                            velx: 0,
-                            vely: 0,
-                            r: 0,
-                            velr: 0
-                        })
-                    }
-                    if ((Math.random() > 0.25)) {
-                        cars.push({
-                            type: "car",
-                            leftlane: leftlane,
-                            hue: Math.random() * 360,
-                            x: leftlane ? -1300 : 2031,
-                            y: 544,
-                            hp: 10,
-                            velx: 0,
-                            vely: 0,
-                            r: 0,
-                            velr: 0
-                        })
-                    } else {
-                        if ((Math.random() > 0.25)) {
-                            cars.push({
-                                type: "truck",
-                                leftlane: leftlane,
-                                hue: Math.random() * 360,
-                                x: leftlane ? -1300 : 2031,
-                                y: 544,
-                                hp: 15,
-                                velx: 0,
-                                vely: 0,
-                                r: 0,
-                                velr: 0
-                            })
-                        } else {
-                            cars.push({
-                                type: "police",
-                                leftlane: leftlane,
-                                hue: Math.random() * 360,
-                                x: leftlane ? -1300 : 2031,
-                                y: 544,
-                                hp: 12,
-                                velx: 0,
-                                vely: 0,
-                                r: 0,
-                                velr: 0
-                            })
-                        }
-                    }
-                }
-            }
+
+            spawning();
 
             if (campos.x > 1200)
                 campos.x = 1200
@@ -247,6 +146,7 @@
             }
             bullets = bullets.filter(bullet => Math.abs(bullet.y - playerpos.y) + Math.abs(bullet.x - playerpos.x) > 20);
             bullets = bullets.filter(bullet => bullet.y < 564 && bullet.y > -50 && bullet.x > -1207 && bullet.x < 2011);
+            
             //explosoirn
             for (const particle of explosionparticles) {
                 particle.velx *= 0.9;
@@ -503,8 +403,8 @@
             if (mouseIsPressed) {
                 if (mouseButton === CENTER) {
                     drawlaser();
-                    camshakeVel.x += Math.random() - 0.5
-                    camshakeVel.y += Math.random() - 0.5
+                    camshakeVel.x += (Math.random() - 0.5) /2
+                    camshakeVel.y += (Math.random() - 0.5) /2
                     playervel.x += Math.random() * 8 - 4;
                     playervel.y += (Math.random() * 8 - 4) - 4;
                     playervel.r += (Math.random() * 2 - 1);
@@ -522,6 +422,7 @@
     </script>
     <script src="car.js"></script>
     <script src="human.js"></script>
+    <script src="spawning.js"></script>
 </body>
 
 </html>
