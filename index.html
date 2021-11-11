@@ -89,8 +89,6 @@
             camshakeVel.y *= 0.9;
             camshakePos.x += camshakeVel.x;
             camshakePos.y += camshakeVel.y;
-            campos.x += camshakePos.x;
-            campos.y += camshakePos.y;
             camvel.x *= 0.93;
             camvel.y *= 0.93;
             campos.x += camvel.x;
@@ -274,6 +272,13 @@
                 }
             }
             projectiles = projectiles.filter(projectile => projectile.y < 544 && !projectile.expired);
+        }
+        
+        function getcamx(){
+            return campos.x + camshakePos.x
+        }
+        function getcamy(){
+            return campos.y + camshakePos.y
         }
 
         function updatehuman(human) {
@@ -556,8 +561,8 @@
             }
         }
         function explosion(x, y, size, force, color1, color2, xvel = 0, yvel = 0) {
-            camshakeVel.x += (Math.random() * force - force / 2) * .5;
-            camshakeVel.y += (Math.random() * force - force / 2) * .5;
+            camshakeVel.x += (Math.random() * force - force / 2);
+            camshakeVel.y += (Math.random() * force - force / 2);
             for (const car of cars) {
                 if ((Math.abs(x - car.x) + Math.abs(y - car.y)) < size * 10) {
                     car.velx += (Math.random() * size - (size / 2));
@@ -600,32 +605,32 @@
                 else {
                     fill(`rgba(${particle.color2.r},${particle.color2.g},${particle.color2.b}, ${1 - (particle.age / particle.lifespan)})`);
                 }
-                circle(particle.x - campos.x, particle.y - campos.y, particle.force * 6)
+                circle(particle.x - getcamx(), particle.y - getcamy(), particle.force * 6)
 
             }
         }
         function drawbeam() {
             noStroke();
             fill("rgba(255, 187, 0, 0.1)");
-            rect(playerpos.x - campos.x - 12, playerpos.y - campos.y, 25, -(playerpos.y - 544))
+            rect(playerpos.x - getcamx() - 12, playerpos.y - getcamy(), 25, -(playerpos.y - 544))
         }
         function drawlaser() {
             noStroke();
             fill("#FF0000");
-            rect(playerpos.x - campos.x - 3, playerpos.y - campos.y, 6, -(playerpos.y - 544))
+            rect(playerpos.x - getcamx() - 3, playerpos.y - getcamy(), 6, -(playerpos.y - 544))
             fill("#FF5E5E");
-            rect(playerpos.x - campos.x - 1, playerpos.y - campos.y, 2, -(playerpos.y - 544))
+            rect(playerpos.x - getcamx() - 1, playerpos.y - getcamy(), 2, -(playerpos.y - 544))
             fill("#FF0000");
-            circle(playerpos.x - campos.x, 544, (Math.random(tijd) * 20 + 10) * (playerpos.y / 300 + 1))
+            circle(playerpos.x - getcamx(), 544 - getcamy(), (Math.random(tijd) * 20 + 10) * (playerpos.y / 300 + 1))
             fill("#FF5E5E");
-            circle(playerpos.x - campos.x, 544, (Math.random(tijd) * 20 + 10) * (playerpos.y / 300 + 1) / 2)
+            circle(playerpos.x - getcamx(), 544 - getcamy(), (Math.random(tijd) * 20 + 10) * (playerpos.y / 300 + 1) / 2)
         }
         function drawprojectile() {
             for (const projectile of projectiles) {
                 //schaduw
                 noStroke();
                 fill("rgba(0,0,0,0.1)");
-                ellipse(projectile.x - campos.x, 544 - campos.y, (Math.sin(tijd / 30) * 4 + 10), (Math.sin(tijd / 30) * 4 + 10) / 2);
+                ellipse(projectile.x - getcamx(), 544 - getcamy(), (Math.sin(tijd / 30) * 4 + 10), (Math.sin(tijd / 30) * 4 + 10) / 2);
                 if (Math.sin(tijd / 30) > 0) {
                     fill("#AE00FF");
                 }
@@ -633,27 +638,27 @@
                     fill("#FFFFFF");
                 }
                 //bal
-                circle(projectile.x - campos.x, projectile.y - campos.y, (Math.sin(tijd / 30) * 4 + 10));
+                circle(projectile.x - getcamx(), projectile.y - getcamy(), (Math.sin(tijd / 30) * 4 + 10));
             }
 
         }
         function drawSterretjes() {
             fill("#FFFFFF");
             for (const star of stars) {
-                circle(star.x - campos.x / 10, star.y - campos.y, star.size)
+                circle(star.x - getcamx() / 10, star.y - getcamy(), star.size)
             }
 
         }
         function drawgebouwen() {
             fill(50)
             for (const building of buildings) {
-                rect(building.x - campos.x / building.depth, building.y - campos.y, building.sizex, building.sizey)
+                rect(building.x - getcamx() / building.depth, building.y - getcamy(), building.sizex, building.sizey)
             }
         }
         function drawstreetlines() {
             fill("#E0A347")
             for (const streetline of streetlines) {
-                rect(streetline.x - campos.x, streetline.y - campos.y, 40, 1)
+                rect(streetline.x - getcamx(), streetline.y - getcamy(), 40, 1)
             }
         }
 
@@ -664,7 +669,7 @@
                 } else {
                     fill(`rgb(${bullet.color2.r},${bullet.color2.g},${bullet.color2.b})`);
                 }
-                circle(bullet.x - campos.x, bullet.y - campos.y, bullet.size)
+                circle(bullet.x - getcamx(), bullet.y - getcamy(), bullet.size)
             }
         }
 
@@ -673,7 +678,7 @@
                 noStroke()
                 //schaduw
                 //human
-                translate(human.x - campos.x, human.y - campos.y)
+                translate(human.x - getcamx(), human.y - getcamy())
                 rotate(human.r * 0.01745329252)
                 colorMode(HSB)
                 fill(human.hue, 90, 60)
@@ -691,14 +696,14 @@
                 noStroke();
                 fill("rgba(0,0,0,0.1)");
                 if (car.type == "car" || car.type == "police" || car.type == "military") {
-                    ellipse(car.x - campos.x, (car.leftlane ? 544 : 524) + 13 - campos.y, 25, 10);
+                    ellipse(car.x - getcamx(), (car.leftlane ? 544 : 524) + 13 - getcamy(), 25, 10);
                 }
                 if (car.type == "truck" || car.type == "tank") {
-                    ellipse(car.x - campos.x, (car.leftlane ? 544 : 524) + 13 - campos.y, 75, 10);
+                    ellipse(car.x - getcamx(), (car.leftlane ? 544 : 524) + 13 - getcamy(), 75, 10);
                 }
 
                 //car
-                translate(car.x - campos.x, car.y - campos.y)
+                translate(car.x - getcamx(), car.y - getcamy())
                 rotate(car.r * 0.01745329252)
                 if (!car.leftlane) {
                     scale(-1, 1)
@@ -844,10 +849,10 @@
             if (discovered) {
                 fill("rgba(0,0,0,0.1)");
                 fill("rgba(0,0,0,0.1)");
-                ellipse(playerpos.x - campos.x, 544 - campos.y, 50, 25);
+                ellipse(playerpos.x - getcamx(), 544 - getcamy(), 50, 25);
             }
             //ufo
-            translate(playerpos.x - campos.x, playerpos.y - campos.y)
+            translate(playerpos.x - getcamx(), playerpos.y - getcamy())
             rotate(playerpos.r * 0.01745329252)
             noStroke();
             if (discovered) {
@@ -910,9 +915,9 @@
             drawgebouwen();
             noStroke();
             fill("#5B5B5B");
-            rect(0, 515 - campos.y, 800, 500);
+            rect(0, 515 - getcamy(), 800, 500);
             fill("#444444");
-            rect(0, 526 - campos.y, 800, 500);
+            rect(0, 526 - getcamy(), 800, 500);
             drawstreetlines();
             if (mouseIsPressed) {
                 if (mouseButton === RIGHT) {
@@ -926,6 +931,8 @@
             if (mouseIsPressed) {
                 if (mouseButton === CENTER) {
                     drawlaser();
+                    camshakeVel.x += Math.random() - 0.5
+                    camshakeVel.y += Math.random() - 0.5
                     playervel.x += Math.random() * 8 - 4;
                     playervel.y += (Math.random() * 8 - 4) - 4;
                     playervel.r += (Math.random() * 2 - 1);
@@ -939,7 +946,6 @@
             drawtext(36, 63, 25, `score = ${score}`, "white", "impact");
             drawtext(36, 83, 25, `health = ${health}`, "green", "impact");
             drawtext(36, 103, 25, `shield = ${Math.floor(shield)}`, "blue", "impact");
-            drawtext(36, 123, 25, `shield = ${camshakeVel.x}`, "blue", "impact");
         }
     </script>
 </body>
