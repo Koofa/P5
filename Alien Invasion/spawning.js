@@ -15,10 +15,11 @@ function spawning() {
                 velr: 0
             })
             if (Math.random() > 0.9 && score > 500) {
+                console.log("NEEE")
                 helicopters.push({
                     type: "police",
                     left: left,
-                    x: left ? -1300 : 2031,
+                    x: left ? -0 : 0,
                     y: 254,
                     hp: 15,
                     velx: 0,
