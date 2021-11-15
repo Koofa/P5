@@ -31,6 +31,7 @@
         let health = 200
         let shield = 100
         let discovered = false
+        let magnet = 0
         let projectiles = []
         let stars = []
         let buildings = []
@@ -98,6 +99,7 @@
             campos.x += camvel.x;
             campos.y += camvel.y;
 
+            magnet *= 0.9;
 
             if (score >= 5) {
                 discovered = true;
@@ -131,6 +133,11 @@
 
             //bullets
             for (const bullet of bullets) {
+                let positions = { x: playerpos.x - bullet.x, y: playerpos.y - bullet.y }
+                let distance = getlength(positions)
+                distance *= distance
+                bullet.xvel += (bullet.x - playerpos.x) / distance * 2 * magnet
+                bullet.yvel += (bullet.y - playerpos.y) / distance * 2 * magnet
                 bullet.x += bullet.xvel;
                 bullet.y += bullet.yvel;
                 bullet.yvel += bullet.weight / 100;
@@ -143,7 +150,11 @@
                         if (Math.abs(playerpos.y - bullet.y) + Math.abs(playerpos.x - bullet.x) < 20)
                             health -= bullet.damage;
                     }
+                if (bullet.y > 564) {
+                    explosion(bullet.x, bullet.y, bullet.damage / 10, bullet.damage / 10, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, bullet.xvel, bullet.yvel)
+                }
             }
+
             bullets = bullets.filter(bullet => Math.abs(bullet.y - playerpos.y) + Math.abs(bullet.x - playerpos.x) > 20);
             bullets = bullets.filter(bullet => bullet.y < 564 && bullet.y > -50 && bullet.x > -1207 && bullet.x < 2011);
 
@@ -178,6 +189,10 @@
             projectiles = projectiles.filter(projectile => projectile.y < 544 && !projectile.expired);
         }
 
+        function mouseWheel() {
+            magnet += 1
+        }
+
         function getcamx() {
             return campos.x + camshakePos.x
         }
@@ -202,7 +217,7 @@
             camshakeVel.y += (Math.random() * force - force / 2) / 2;
             for (const car of cars) {
                 if ((Math.abs(x - car.x) + Math.abs(y - car.y)) < (size + force) * 10) {
-                    let positions = {x: car.x - x, y: car.y - y}
+                    let positions = { x: car.x - x, y: car.y - y }
                     car.velx += ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2) / 2;
                     car.velr += ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2) / 2;
                     car.vely -= ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2) / 2;
@@ -211,7 +226,7 @@
             }
             for (const human of humans) {
                 if ((Math.abs(x - human.x) + Math.abs(y - human.y)) < (size + force) * 10) {
-                    let positions = {x: human.x - x, y: human.y - y}
+                    let positions = { x: human.x - x, y: human.y - y }
                     human.velx += ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2);
                     human.velr += ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2);
                     human.vely -= ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2);
