@@ -38,6 +38,7 @@
         let streetlines = []
         let explosionparticles = []
         let cars = []
+        let helicopters = []
         let humans = []
         let bullets = []
         let tijd = 0
@@ -134,13 +135,13 @@
             //bullets
             for (const bullet of bullets) {
                 let positions = { x: playerpos.x - bullet.x, y: playerpos.y - bullet.y }
-                let distance = getlength(positions)
+                let distance = getlength(positions) +1
                 distance *= distance
-                bullet.xvel += (bullet.x - playerpos.x) / distance * 2 * magnet
-                bullet.yvel += (bullet.y - playerpos.y) / distance * 2 * magnet
-                bullet.x += bullet.xvel;
-                bullet.y += bullet.yvel;
-                bullet.yvel += bullet.weight / 100;
+                bullet.velx += (bullet.x - playerpos.x) / distance * 2 * magnet
+                bullet.vely += (bullet.y - playerpos.y) / distance * 2 * magnet
+                bullet.x += bullet.velx;
+                bullet.y += bullet.vely;
+                bullet.vely += bullet.weight / 100;
                 if (Math.abs(playerpos.y - bullet.y) + Math.abs(playerpos.x - bullet.x) < 60)
                     if (shield > 0) {
                         shield -= bullet.damage;
@@ -150,13 +151,13 @@
                         if (Math.abs(playerpos.y - bullet.y) + Math.abs(playerpos.x - bullet.x) < 20)
                             health -= bullet.damage;
                     }
-                if (bullet.y > 564) {
-                    explosion(bullet.x, bullet.y, bullet.damage / 10, bullet.damage / 10, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, bullet.xvel, bullet.yvel)
+                if (bullet.y > 544) {
+                    explosion(bullet.x, bullet.y, bullet.damage / 10, bullet.damage / 10, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, bullet.velx, bullet.vely)
                 }
             }
 
             bullets = bullets.filter(bullet => Math.abs(bullet.y - playerpos.y) + Math.abs(bullet.x - playerpos.x) > 20);
-            bullets = bullets.filter(bullet => bullet.y < 564 && bullet.y > -50 && bullet.x > -1207 && bullet.x < 2011);
+            bullets = bullets.filter(bullet => bullet.y < 544 && bullet.y > -50 && bullet.x > -1207 && bullet.x < 2011);
 
             //explosoirn
             for (const particle of explosionparticles) {
@@ -169,6 +170,7 @@
             explosionparticles = explosionparticles.filter(particle => particle.age < particle.lifespan);
 
             updatecar();
+            updatehelicopter();
 
             for (const human of humans) {
                 updatehuman(human);
@@ -190,7 +192,12 @@
         }
 
         function mouseWheel() {
-            magnet += 1
+            if (event.deltaY > 0){
+                magnet += 1
+            }else{
+                magnet += -1
+            }
+
         }
 
         function getcamx() {
@@ -212,7 +219,7 @@
                 playervel.y -= 25;
             }
         }
-        function explosion(x, y, size, force, color1, color2, xvel = 0, yvel = 0) {
+        function explosion(x, y, size, force, color1, color2, velx = 0, vely = 0) {
             camshakeVel.x += (Math.random() * force - force / 2) / 2;
             camshakeVel.y += (Math.random() * force - force / 2) / 2;
             for (const car of cars) {
@@ -240,8 +247,8 @@
                     color2: color2,
                     x: x,
                     y: y,
-                    velx: Math.cos(a) * size * Math.random() + xvel * (Math.random() * 0.9 + 0.1),
-                    vely: Math.sin(a) * size * Math.random() + yvel * (Math.random() * 0.9 + 0.1),
+                    velx: Math.cos(a) * size * Math.random() + velx * (Math.random() * 0.9 + 0.1),
+                    vely: Math.sin(a) * size * Math.random() + vely * (Math.random() * 0.9 + 0.1),
                     age: 0,
                     lifespan: Math.random() * (size / 10) + 0.1,
                     temp: Math.random() > 0.2,
@@ -337,7 +344,6 @@
             //schaduw
             if (discovered) {
                 fill("rgba(0,0,0,0.1)");
-                fill("rgba(0,0,0,0.1)");
                 ellipse(playerpos.x - getcamx(), 544 - getcamy(), 50, 25);
             }
             //ufo
@@ -416,6 +422,7 @@
 
             drawhuman();
             drawcar();
+            drawhelicopter();
 
             if (mouseIsPressed) {
                 if (mouseButton === CENTER) {
@@ -440,6 +447,7 @@
     <script src="car.js"></script>
     <script src="human.js"></script>
     <script src="spawning.js"></script>
+    <script src="helicopter.js"></script>
 </body>
 
 </html>

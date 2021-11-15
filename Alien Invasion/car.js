@@ -10,13 +10,19 @@ function updatecar() {
         car.vely += 0.1;
         car.velr *= 0.99;
 
+        let positions = { x: playerpos.x - car.x, y: playerpos.y - car.y }
+        let distance = getlength(positions) + 1
+        distance *= distance
+        car.velx += (car.x - playerpos.x) / distance * 8 * magnet
+        car.vely += (car.y - playerpos.y) / distance * 8 * magnet
+
         if (car.type == "police" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.995) {
             bullets.push({
                 x: car.x,
                 y: car.y,
                 size: 5,
-                xvel: 4 * (Math.random() * 0.1 - 0.05 + -(car.x - playerpos.x) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
-                yvel: 4 * (Math.random() * 0.1 - 0.05 + -(car.y - playerpos.y) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
+                velx: 4 * (Math.random() * 0.1 - 0.05 + -(car.x - playerpos.x) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
+                vely: 4 * (Math.random() * 0.1 - 0.05 + -(car.y - playerpos.y) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
                 weight: 0,
                 color1: { r: 255, g: 255, b: 0 },
                 color2: { r: 255, g: 255, b: 255 },
@@ -28,8 +34,8 @@ function updatecar() {
                 x: car.x,
                 y: car.y,
                 size: 5,
-                xvel: 4 * (Math.random() * 0.1 - 0.05 + -(car.x - playerpos.x) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
-                yvel: 4 * (Math.random() * 0.1 - 0.05 + -(car.y - playerpos.y) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
+                velx: 4 * (Math.random() * 0.1 - 0.05 + -(car.x - playerpos.x) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
+                vely: 4 * (Math.random() * 0.1 - 0.05 + -(car.y - playerpos.y) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
                 weight: 0,
                 color1: { r: 255, g: 255, b: 0 },
                 color2: { r: 255, g: 255, b: 255 },
@@ -41,8 +47,8 @@ function updatecar() {
                 x: car.x,
                 y: car.y,
                 size: 8,
-                xvel: 6 * (Math.random() * 0.1 - 0.05 + -(car.x - playerpos.x) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
-                yvel: 6 * (Math.random() * 0.1 - 0.05 + -(car.y - playerpos.y) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
+                velx: 6 * (Math.random() * 0.1 - 0.05 + -(car.x - playerpos.x) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
+                vely: 6 * (Math.random() * 0.1 - 0.05 + -(car.y - playerpos.y) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
                 weight: 2,
                 color1: { r: 255, g: 58, b: 0 },
                 color2: { r: 255, g: 255, b: 255 },
@@ -311,6 +317,30 @@ function drawcar() {
             rect(-25, -12, 31, 7)
 
             stroke("#47561C");
+            strokeWeight(2);
+            let direction = { x: car.x - playerpos.x, y: -(car.y - playerpos.y) }
+            if (car.leftlane) {
+                direction.x *= -1
+            }
+            let length = getlength(direction)
+            line(4, -9, direction.x / length * 30 + 4, direction.y / length * 30 - 9)
+            noStroke();
+        }
+
+        if (car.type == "IAAcar") {
+            colorMode(RGB)
+            fill("#E5C649")
+            quad(-31, 10, 31, 10, 27, 15, -27, 15)
+            fill("#E5C649")
+            if (car.hp < 7) {
+                fill("#BCA33C")
+            }
+            quad(-29, -3, 13, -3, 33, 5, -32, 10)
+            rect(-32, 5, 65, 5)
+            quad(-25, -6, 7, -12, 7, -3, -19, -3)
+            rect(-25, -12, 31, 7)
+
+            stroke("#E5C649");
             strokeWeight(2);
             let direction = { x: car.x - playerpos.x, y: -(car.y - playerpos.y) }
             if (car.leftlane) {
