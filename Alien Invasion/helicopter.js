@@ -72,11 +72,11 @@ function updatehelicopter() {
         //physics 2
         if (mouseIsPressed) {
             if (mouseButton === CENTER && heli.y > playerpos.y) {
-                if (Math.abs(heli.x - playerpos.x) < 70)
+                if (Math.abs(heli.x - playerpos.x) < 56)
                     heli.hp -= 3
             }
             if (mouseButton === RIGHT && heli.y > playerpos.y) {
-                if (Math.abs(heli.x - playerpos.x) < 70) {
+                if (Math.abs(heli.x - playerpos.x) < 56) {
                     heli.vely += (playervel.y / 7) - 0.2;
                     heli.velx += (playerpos.x - heli.x) / 20;
                     heli.vely *= 0.85;
@@ -94,7 +94,7 @@ function updatehelicopter() {
         }
 
         projectiles.forEach(projectile => {
-            if (Math.abs(heli.x - projectile.x) + Math.abs(heli.y - projectile.y) < 70) {
+            if (Math.abs(heli.x - projectile.x) + Math.abs(heli.y - projectile.y) < 56) {
                 heli.hp += -5;
                 projectile.expired = true;
             }
@@ -102,6 +102,7 @@ function updatehelicopter() {
 
         //death
         if (heli.hp <= 0) {
+            score += 2;
             explosion(heli.x, heli.y, 11, 8, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, heli.velx, heli.vely);
         }
     }
@@ -117,7 +118,9 @@ function drawhelicopter() {
         translate(heli.x - getcamx(), heli.y - getcamy())
         rotate(heli.r * 0.01745329252)
         if (!heli.left) {
-            scale(-1, 1)
+            scale(-0.8, 0.8)
+        }else{
+            scale(0.8, 0.8)
         }
         colorMode(RGB);
 
