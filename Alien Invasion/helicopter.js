@@ -120,6 +120,7 @@ function drawhelicopter() {
             scale(-1, 1)
         }
         colorMode(RGB);
+
         if (heli.hp < 7) {
             stroke("#070707")
         } else {
@@ -135,7 +136,6 @@ function drawhelicopter() {
         } else {
             fill("#161616")
         }
-
         quad(-10, 15, -20, 9, -27, -5, -19, -13)
         quad(6, -13, 22, -9, 34, 5, 24, 15)
         rect(-76, -6, 54, 5)
