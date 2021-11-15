@@ -1,5 +1,6 @@
 function updatecar() {
     for (const car of cars) {
+        //physics 1
         if ((Math.abs(car.x - playerpos.x) + Math.abs(car.y - playerpos.y)) < 30) {
             if ((car.vely - playervel.y) + Math.abs(car.velr - playervel.r) + Math.abs(car.velx - playervel.x) > 10)
                 car.hp -= (Math.abs((car.vely - playervel.y) + Math.abs(car.velr - playervel.r) + Math.abs(car.velx - playervel.x)) / 50)
@@ -7,6 +8,7 @@ function updatecar() {
             car.vely += -(car.vely - playervel.y) / 10;
             car.velr += -(car.velr - playervel.r) / 10;
         }
+
         car.vely += 0.1;
         car.velr *= 0.99;
 
@@ -16,6 +18,7 @@ function updatecar() {
         car.velx += (car.x - playerpos.x) / distance * 8 * magnet
         car.vely += (car.y - playerpos.y) / distance * 8 * magnet
 
+        //shooting
         if (car.type == "police" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.995) {
             bullets.push({
                 x: car.x,
@@ -56,6 +59,7 @@ function updatecar() {
             })
         }
 
+        //physics 2
         if (mouseIsPressed) {
             if (mouseButton === CENTER) {
                 if (car.y > playerpos.y) {
@@ -107,6 +111,7 @@ function updatecar() {
         car.y += car.vely;
         car.r += car.velr;
 
+        //movement
         if (car.y > (car.leftlane ? 544 : 524)) {
             if (Math.abs(car.vely) + Math.abs(car.velr) + (Math.abs(car.velx) / 5) > 5) {
                 car.hp -= ((Math.abs(car.vely) * 3) + Math.abs(car.velr) + (Math.abs(car.velx / 10))) / 2
@@ -174,6 +179,7 @@ function updatecar() {
             }
         });
 
+        //death
         if (car.hp <= 0) {
             if (car.type == "car") {
                 score += 1;
@@ -201,7 +207,7 @@ function updatecar() {
 }
 function drawcar() {
     function drawing(car) {
-        //schaduw
+        //shadow
         noStroke();
         fill("rgba(0,0,0,0.1)");
         if (car.type == "car" || car.type == "police" || car.type == "military") {

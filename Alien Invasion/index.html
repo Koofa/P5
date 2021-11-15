@@ -231,6 +231,15 @@
                     car.hp -= force / (getlength(positions) / 10)
                 }
             }
+            for (const heli of helicopters) {
+                if ((Math.abs(x - heli.x) + Math.abs(y - heli.y)) < (size + force) * 10) {
+                    let positions = { x: heli.x - x, y: heli.y - y }
+                    heli.velx += ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2) / 2;
+                    heli.velr += ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2) / 2;
+                    heli.vely -= ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2) / 2;
+                    heli.hp -= force / (getlength(positions) / 10)
+                }
+            }
             for (const human of humans) {
                 if ((Math.abs(x - human.x) + Math.abs(y - human.y)) < (size + force) * 10) {
                     let positions = { x: human.x - x, y: human.y - y }

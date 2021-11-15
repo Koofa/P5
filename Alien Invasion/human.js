@@ -1,4 +1,5 @@
 function updatehuman(human) {
+    //physics
     if ((Math.abs(human.x - playerpos.x) + Math.abs(human.y - playerpos.y)) < 30) {
         if ((human.vely - playervel.y) + Math.abs(human.velr - playervel.r) + Math.abs(human.velx - playervel.x) > 2)
             human.hp -= (Math.abs((human.vely - playervel.y) + Math.abs(human.velr - playervel.r) + Math.abs(human.velx - playervel.x)) / 40)
@@ -31,6 +32,7 @@ function updatehuman(human) {
     human.y += human.vely;
     human.r += human.velr;
 
+    //movement
     if (human.y > 520) {
         if (Math.abs(human.vely) + Math.abs(human.velr) + (Math.abs(human.velx) / 5) > 5) {
             human.hp -= ((Math.abs(human.vely) * 3) + Math.abs(human.velr) + (Math.abs(human.velx / 10))) / 2
@@ -63,6 +65,7 @@ function updatehuman(human) {
             human.hp += -5;
         }
     });
+    //death
     if (human.hp <= 0) {
         score += 0.5;
         explosion(human.x, human.y, 1, 1, { r: 255, g: 0, b: 0 }, { r: 255, g: 0, b: 0 }, human.velx, human.vely);
@@ -71,7 +74,7 @@ function updatehuman(human) {
 function drawhuman() {
     for (const human of humans) {
         noStroke()
-        //schaduw
+        //shadow
         //human
         translate(human.x - getcamx(), human.y - getcamy())
         rotate(human.r * 0.01745329252)
