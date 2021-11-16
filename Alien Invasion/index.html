@@ -166,6 +166,20 @@
                 particle.x += particle.velx;
                 particle.y += particle.vely;
                 particle.age += deltaTime / 1000;
+                if ((Math.abs(particle.x - playerpos.x) + Math.abs(particle.y - playerpos.y)) < 30) {
+                    particle.velx += -(particle.velx - playervel.x) /2;
+                    particle.vely += -(particle.vely - playervel.y) /2;
+                }
+                if (mouseIsPressed) {
+                    if (mouseButton === RIGHT) {
+                        if (Math.abs(particle.x - playerpos.x) < 30 && particle.y > playerpos.y) {
+                            particle.vely += (playervel.y / 4) - 0.8;
+                            particle.velx += (playerpos.x - particle.x) / 5;
+                            particle.vely *= 0.8;
+                            particle.velx *= 0.8;
+                        }
+                    }
+                }
             }
             explosionparticles = explosionparticles.filter(particle => particle.age < particle.lifespan);
 
@@ -264,7 +278,7 @@
                     velx: Math.cos(a) * size * Math.random() + velx * (Math.random() * 0.9 + 0.1),
                     vely: Math.sin(a) * size * Math.random() + vely * (Math.random() * 0.9 + 0.1),
                     age: 0,
-                    lifespan: Math.random() * (size / 10) + 0.1,
+                    lifespan: Math.random() * ((size / 20) + (force / 20)) + 0.1,
                     temp: Math.random() > 0.2,
                     size: size * Math.random() * 0.5 + 1,
                     force: force * Math.random() * 0.5 + 1,

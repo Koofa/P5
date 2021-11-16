@@ -16,6 +16,12 @@ function updatehelicopter() {
         heli.y += heli.vely
         heli.r += heli.velr
 
+        let positions = { x: playerpos.x - heli.x, y: playerpos.y - heli.y }
+        let distance = getlength(positions) + 1
+        distance *= distance
+        heli.velx += (heli.x - playerpos.x) / distance * 8 * magnet
+        heli.vely += (heli.y - playerpos.y) / distance * 8 * magnet
+
         //shooting
         if (discovered && heli.hp > 7 && heli.type == "police" && Math.random() > 0.99 && Math.abs(heli.x - playerpos.x) < 1000) {
             bullets.push({
@@ -45,37 +51,41 @@ function updatehelicopter() {
         }
 
         //movement
-        if (discovered && heli.hp > 7) {
-            if ((Math.abs(heli.x - playerpos.x) + Math.abs(heli.y - playerpos.y)) < 100) {
-                if (playerpos.x < heli.x) {
-                    heli.velx += Math.random() * 0.15 + 0.15;
-                } else {
-                    heli.velx += Math.random() * -0.15 - 0.15;
+        if (discovered) {
+            if (heli.hp > 7) {
+                if ((Math.abs(heli.x - playerpos.x) + Math.abs(heli.y - playerpos.y)) < 100) {
+                    if (playerpos.x < heli.x) {
+                        heli.velx += Math.random() * 0.15 + 0.15;
+                    } else {
+                        heli.velx += Math.random() * -0.15 - 0.15;
+                    }
+                    if (playerpos.y < heli.y) {
+                        heli.vely += Math.random() * 0.15 + 0.15;
+                    } else {
+                        heli.vely += Math.random() * -0.15 - 0.15;
+                    }
                 }
-                if (playerpos.y < heli.y) {
-                    heli.vely += Math.random() * 0.15 + 0.15;
-                } else {
-                    heli.vely += Math.random() * -0.15 - 0.15;
-                }
-            }
 
-            if
-                (Math.abs(heli.x - playerpos.x) > 305) {
-                if (playerpos.x < heli.x) {
-                    heli.velx += Math.random() * -0.15 - 0.15;
-                } else {
-                    heli.velx += Math.random() * 0.15 + 0.15;
+                if
+                    (Math.abs(heli.x - playerpos.x) > 305) {
+                    if (playerpos.x < heli.x) {
+                        heli.velx += Math.random() * -0.15 - 0.15;
+                    } else {
+                        heli.velx += Math.random() * 0.15 + 0.15;
+                    }
                 }
-            }
-            if (Math.abs(heli.y - playerpos.y) > 205) {
-                if (playerpos.y < heli.y) {
-                    heli.vely += Math.random() * -0.15 - 0.15;
-                } else {
-                    heli.vely += Math.random() * 0.15 + 0.15;
+                if (Math.abs(heli.y - playerpos.y) > 205) {
+                    if (playerpos.y < heli.y) {
+                        heli.vely += Math.random() * -0.15 - 0.15;
+                    } else {
+                        heli.vely += Math.random() * 0.15 + 0.15;
+                    }
                 }
             }
         } else {
-            heli.velx += (heli.left ? 0.1 : -0.1)
+            if (heli.hp > 7) {
+                heli.velx += (heli.left ? 0.1 : -0.1)
+            }
         }
 
         if (heli.hp <= 7) {
@@ -148,9 +158,9 @@ function drawhelicopter() {
         translate(heli.x - getcamx(), heli.y - getcamy())
         rotate(heli.r * 0.01745329252)
         if (!heli.left) {
-            scale(-0.8, 0.8)
+            scale(-0.7, 0.7)
         } else {
-            scale(0.8, 0.8)
+            scale(0.7, 0.7)
         }
         colorMode(RGB);
         if (heli.type == "military") {

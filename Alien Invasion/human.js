@@ -19,7 +19,7 @@ function updatehuman(human) {
         }
         if (mouseButton === RIGHT) {
             if (Math.abs(human.x - playerpos.x) < 30 && human.y > playerpos.y) {
-                human.vely += (playervel.y / 4) - 0.5;
+                human.vely += (playervel.y / 4) - 0.8;
                 human.velx += (playerpos.x - human.x) / 5;
                 human.vely *= 0.8;
                 human.velx *= 0.8;
