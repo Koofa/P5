@@ -135,7 +135,7 @@
             //bullets
             for (const bullet of bullets) {
                 let positions = { x: playerpos.x - bullet.x, y: playerpos.y - bullet.y }
-                let distance = getlength(positions) +1
+                let distance = getlength(positions) + 1
                 distance *= distance
                 bullet.velx += (bullet.x - playerpos.x) / distance * 2 * magnet
                 bullet.vely += (bullet.y - playerpos.y) / distance * 2 * magnet
@@ -192,9 +192,14 @@
         }
 
         function mouseWheel() {
-            if (event.deltaY > 0){
+            weaponeffect = 1;
+            weaponcolor.r = 81;
+            weaponcolor.g = 127;
+            weaponcolor.b = 255;
+
+            if (event.deltaY > 0) {
                 magnet += 1
-            }else{
+            } else {
                 magnet += -1
             }
 

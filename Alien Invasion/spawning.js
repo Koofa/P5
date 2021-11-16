@@ -11,6 +11,9 @@ function spawning() {
             }
             if (Math.random() > 0.5) {
                 spawnMilitary(left)
+                if (Math.random() > 0.9){
+                    spawnHelimilitary(left)
+                }
             }
         }
         if (score < 300 || (score < 700 && Math.random() > 0.9)) {
@@ -126,6 +129,21 @@ function spawnHelipolice(left) {
         velx: 0,
         vely: 0,
         r: 0,
-        velr: 0
+        velr: 0,
+        rotorspeed: 0
+    })
+}
+function spawnHelimilitary(left) {
+    helicopters.push({
+        type: "military",
+        left: left,
+        x: left ? -1300 : 2031,
+        y: 254,
+        hp: 30,
+        velx: 0,
+        vely: 0,
+        r: 0,
+        velr: 0,
+        rotorspeed: 0
     })
 }

@@ -16,6 +16,34 @@ function updatehelicopter() {
         heli.y += heli.vely
         heli.r += heli.velr
 
+        //shooting
+        if (discovered && heli.hp > 7 && heli.type == "police" && Math.random() > 0.99 && Math.abs(heli.x - playerpos.x) < 1000) {
+            bullets.push({
+                x: heli.x,
+                y: heli.y,
+                size: 5,
+                velx: 4 * (Math.random() * 0.1 - 0.05 + -(heli.x - playerpos.x) / Math.sqrt((Math.abs(heli.x - playerpos.x) * Math.abs(heli.x - playerpos.x)) + (Math.abs(heli.y - playerpos.y) * Math.abs(heli.y - playerpos.y)))),
+                vely: 4 * (Math.random() * 0.1 - 0.05 + -(heli.y - playerpos.y) / Math.sqrt((Math.abs(heli.x - playerpos.x) * Math.abs(heli.x - playerpos.x)) + (Math.abs(heli.y - playerpos.y) * Math.abs(heli.y - playerpos.y)))),
+                weight: 0,
+                color1: { r: 255, g: 255, b: 0 },
+                color2: { r: 255, g: 255, b: 255 },
+                damage: 6
+            })
+        }
+        if (discovered && heli.hp > 7 && heli.type == "military" && Math.random() > 0.92 && Math.sin(tijd / 200) > 0.5 && Math.abs(heli.x - playerpos.x) < 1000) {
+            bullets.push({
+                x: heli.x,
+                y: heli.y,
+                size: 5,
+                velx: 4 * (Math.random() * 0.1 - 0.05 + -(heli.x - playerpos.x) / Math.sqrt((Math.abs(heli.x - playerpos.x) * Math.abs(heli.x - playerpos.x)) + (Math.abs(heli.y - playerpos.y) * Math.abs(heli.y - playerpos.y)))),
+                vely: 4 * (Math.random() * 0.1 - 0.05 + -(heli.y - playerpos.y) / Math.sqrt((Math.abs(heli.x - playerpos.x) * Math.abs(heli.x - playerpos.x)) + (Math.abs(heli.y - playerpos.y) * Math.abs(heli.y - playerpos.y)))),
+                weight: 0,
+                color1: { r: 255, g: 255, b: 0 },
+                color2: { r: 255, g: 255, b: 255 },
+                damage: 6
+            })
+        }
+
         //movement
         if (discovered && heli.hp > 7) {
             if ((Math.abs(heli.x - playerpos.x) + Math.abs(heli.y - playerpos.y)) < 100) {
@@ -46,14 +74,16 @@ function updatehelicopter() {
                     heli.vely += Math.random() * 0.15 + 0.15;
                 }
             }
-        }else{
+        } else {
             heli.velx += (heli.left ? 0.1 : -0.1)
         }
 
         if (heli.hp <= 7) {
+            heli.rotorspeed += 1
             heli.vely += 0.2;
         }
         if (heli.hp > 7) {
+            heli.rotorspeed = 0
             if (heli.y < 416) {
                 if (Math.sin(tijd / 200) > 0) {
                     if (Math.random() > 0.9)
@@ -119,48 +149,82 @@ function drawhelicopter() {
         rotate(heli.r * 0.01745329252)
         if (!heli.left) {
             scale(-0.8, 0.8)
-        }else{
+        } else {
             scale(0.8, 0.8)
         }
         colorMode(RGB);
-
-        if (heli.hp < 7) {
-            stroke("#070707")
-        } else {
-            stroke("#070707")
-        }
-        strokeWeight(1)
-        rect(-7, 15, 23, 4)
-        line(-24, 19, 32, 19)
-        noStroke()
-
-        if (heli.hp < 7) {
-            fill("#070707")
-        } else {
-            fill("#161616")
-        }
-        quad(-10, 15, -20, 9, -27, -5, -19, -13)
-        quad(6, -13, 22, -9, 34, 5, 24, 15)
-        rect(-76, -6, 54, 5)
-        rect(-6, -15, 5, 6)
-
-        if (heli.hp < 7) {
-            fill("#898989")
-        } else {
-            fill("#D3D3D3")
-        }
-        
-        quad(-10, 15, -19, -13, 6, -13, 24, 15)
-        fill("rgba(96,96,96,0.5)");
-        if (Math.sin(tijd / 10) > 0) {
-            circle(-73, -4, 17)
-            stroke("rgba(96,96,96,0.5)")
+        if (heli.type == "military") {
+            if (heli.hp < 7) {
+                stroke("#21280D")
+            } else {
+                stroke("#323D14")
+            }
             strokeWeight(2)
-            line(-54, -16, 46, -16)
-            noStroke();
-        } else {
-
+            rect(3, 20, 23, 9)
+            line(-17, 28, 41, 28)
+            strokeWeight(2)
+            rect(-4, -16, 6, 9)
+            if (heli.hp < 7) {
+                fill("#39421B")
+                stroke("#39421B")
+            } else {
+                fill("#47561C")
+                stroke("#47561C")
+            }
+            quad(-11, 10, -27, 2, -21, -11, 43, 13)
+            quad(-11, 10, -2, 20, 30, 20, 43, 13)
+            quad(-21, -11, 18, -10, 40, 6, 43, 13)
+            rect(-84, 2, 64, 5)
+            noStroke()
+            fill("rgba(96,96,96,0.5)");
+            if (Math.sin(tijd / (10 + heli.rotorspeed)) > 0) {
+                circle(-81, 1, 21)
+                stroke("rgba(96,96,96,0.5)")
+                strokeWeight(2)
+                line(-52, -14, 51, -14)
+                noStroke();
+            }
+            resetMatrix()
         }
-        resetMatrix();
+
+        if (heli.type == "police") {
+            if (heli.hp < 7) {
+                stroke("#070707")
+            } else {
+                stroke("#070707")
+            }
+            strokeWeight(1)
+            rect(-7, 15, 23, 4)
+            line(-24, 19, 32, 19)
+            noStroke()
+
+            if (heli.hp < 7) {
+                fill("#070707")
+            } else {
+                fill("#161616")
+            }
+            quad(-10, 15, -20, 9, -27, -5, -19, -13)
+            quad(6, -13, 22, -9, 34, 5, 24, 15)
+            rect(-76, -6, 54, 5)
+            rect(-6, -15, 5, 6)
+
+            if (heli.hp < 7) {
+                fill("#898989")
+            } else {
+                fill("#D3D3D3")
+            }
+
+            quad(-10, 15, -19, -13, 6, -13, 24, 15)
+            fill("rgba(96,96,96,0.5)");
+            if (Math.sin(tijd / (10 + heli.rotorspeed)) > 0) {
+                circle(-73, -4, 17)
+                stroke("rgba(96,96,96,0.5)")
+                strokeWeight(2)
+                line(-54, -16, 46, -16)
+                noStroke();
+            }
+            resetMatrix();
+        }
+
     }
 }
