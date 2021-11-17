@@ -9,8 +9,12 @@ function spawning() {
             if (Math.random() > 0.9 && score > 500) {
                 spawnTank(left)
             }
+            if (Math.random() > 0.8 && score > 1000) {
+                spawnAAAcar(left)
+            }
             if (Math.random() > 0.5) {
                 spawnMilitary(left)
+            }else{
                 if (Math.random() > 0.9){
                     spawnHelimilitary(left)
                 }
@@ -95,7 +99,7 @@ function spawnMilitary(left) {
     cars.push({
         type: "military",
         leftlane: left,
-        hue: Math.random() * 360,
+        hue: 0,
         x: left ? -1300 : 2031,
         y: 544,
         hp: 20,
@@ -109,10 +113,24 @@ function spawnTank(left) {
     cars.push({
         type: "tank",
         leftlane: left,
-        hue: Math.random() * 360,
+        hue: 0,
         x: left ? -1300 : 2031,
         y: 544,
         hp: 35,
+        velx: 0,
+        vely: 0,
+        r: 0,
+        velr: 0
+    })
+}
+function spawnAAAcar(left) {
+    cars.push({
+        type: "AAAcar",
+        leftlane: left,
+        hue: 0,
+        x: left ? -1300 : 2031,
+        y: 544,
+        hp: 25,
         velx: 0,
         vely: 0,
         r: 0,
@@ -139,7 +157,7 @@ function spawnHelimilitary(left) {
         left: left,
         x: left ? -1300 : 2031,
         y: 254,
-        hp: 30,
+        hp: 25,
         velx: 0,
         vely: 0,
         r: 0,
