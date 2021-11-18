@@ -119,7 +119,7 @@
                 playervel.y += Math.random() * 4 - 2;
                 explosion(playerpos.x - (Math.random() * 40 - 20), playerpos.y - (Math.random() * 20 - 10), 1, 1, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, playervel.x, playervel.y)
             }
-
+            
             spawning();
 
             if (campos.x > 1200)
@@ -357,7 +357,6 @@
                 rect(streetline.x - getcamx(), streetline.y - getcamy(), 40, 1)
             }
         }
-
         function drawbullet() {
             for (const bullet of bullets) {
                 let color

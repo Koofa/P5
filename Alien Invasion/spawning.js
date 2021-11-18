@@ -3,13 +3,13 @@ function spawning() {
         let left = Math.random() > 0.5
         if (score > 250 && Math.random() > 0.5 && score < 1500) {
             spawnPolice(left)
-            if (Math.random() > 0.9 && score > 500) {
+            if (Math.random() > 0.9 && score > 350) {
                 spawnHelipolice(left)
             }
-            if (Math.random() > 0.9 && score > 500) {
+            if (Math.random() > 0.9 && score > 700) {
                 spawnTank(left)
             }
-            if (Math.random() > 0.5) {
+            if (Math.random() > 0.5 && score > 500) {
                 spawnMilitary(left)
             } else {
                 if (Math.random() > 0.9) {
