@@ -137,8 +137,8 @@
                 let positions = { x: playerpos.x - bullet.x, y: playerpos.y - bullet.y }
                 let distance = getlength(positions) + 1
                 distance *= distance
-                bullet.velx += (bullet.x - playerpos.x) / distance * 2 * magnet
-                bullet.vely += (bullet.y - playerpos.y) / distance * 2 * magnet
+                bullet.velx += (bullet.x - playerpos.x) / distance * 3 * magnet
+                bullet.vely += (bullet.y - playerpos.y) / distance * 3 * magnet
                 bullet.x += bullet.velx;
                 bullet.y += bullet.vely;
                 bullet.vely += bullet.weight / 100;
@@ -169,8 +169,8 @@
                 particle.y += particle.vely;
                 particle.age += deltaTime / 1000;
                 if ((Math.abs(particle.x - playerpos.x) + Math.abs(particle.y - playerpos.y)) < 30) {
-                    particle.velx += -(particle.velx - playervel.x) /2;
-                    particle.vely += -(particle.vely - playervel.y) /2;
+                    particle.velx += -(particle.velx - playervel.x) / 2;
+                    particle.vely += -(particle.vely - playervel.y) / 2;
                 }
                 if (mouseIsPressed) {
                     if (mouseButton === RIGHT) {
@@ -198,10 +198,10 @@
                 projectile.x += projectile.velx;
                 projectile.y += projectile.vely;
                 if (projectile.y > 544) {
-                    explosion(projectile.x, projectile.y, 2, 4, { r: 174, g: 0, b: 255 }, { r: 215, g: 135, b: 255 });
+                    explosion(projectile.x, projectile.y, 4, 6, { r: 174, g: 0, b: 255 }, { r: 215, g: 135, b: 255 });
                 }
                 if (projectile.expired) {
-                    explosion(projectile.x, projectile.y, 2, 4, { r: 174, g: 0, b: 255 }, { r: 215, g: 135, b: 255 });
+                    explosion(projectile.x, projectile.y, 4, 6, { r: 174, g: 0, b: 255 }, { r: 215, g: 135, b: 255 });
                 }
             }
             projectiles = projectiles.filter(projectile => projectile.y < 544 && !projectile.expired);
@@ -233,7 +233,7 @@
                 projectiles.push({
                     x: playerpos.x,
                     y: playerpos.y,
-                    velx: playervel.x / 2,
+                    velx: playervel.x / 1.3,
                     vely: (playervel.y / 10) + 10,
                     expired: false
                 })
@@ -355,11 +355,19 @@
 
         function drawbullet() {
             for (const bullet of bullets) {
+                let color
                 if (Math.sin(tijd / 50) > 0.5) {
-                    fill(`rgb(${bullet.color1.r},${bullet.color1.g},${bullet.color1.b})`);
+                    color = (`rgb(${bullet.color1.r},${bullet.color1.g},${bullet.color1.b})`);
                 } else {
-                    fill(`rgb(${bullet.color2.r},${bullet.color2.g},${bullet.color2.b})`);
+                    color = (`rgb(${bullet.color2.r},${bullet.color2.g},${bullet.color2.b})`);
                 }
+                if (bullet.trail) {
+                    strokeWeight(bullet.size)
+                    stroke(color);
+                    line(bullet.x - getcamx(), bullet.y - getcamy(), bullet.x - getcamx() - bullet.velx, bullet.y - getcamy() - bullet.vely)
+                    noStroke()
+                }
+                fill(color);
                 circle(bullet.x - getcamx(), bullet.y - getcamy(), bullet.size)
             }
         }

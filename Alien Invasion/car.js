@@ -40,8 +40,9 @@ function updatecar() {
                 velx: 12 * (Math.random() * 0.1 - 0.05 + -(car.x - playerpos.x) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
                 vely: 12 * (Math.random() * 0.1 - 0.05 + -(car.y - playerpos.y) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
                 weight: 0,
-                color1: { r: 255, g: 255, b: 0 },
+                color1: { r: 136, g: 242, b: 70 },
                 color2: { r: 255, g: 255, b: 255 },
+                trail: true,
                 damage: 6
             })
         }
@@ -71,6 +72,20 @@ function updatecar() {
                 damage: 50
             })
         }
+        if (car.type == "AAAtank" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.9 && Math.sin(tijd / 100) > 0.9) {
+            bullets.push({
+                x: car.x,
+                y: car.y,
+                size: 8,
+                velx: 8 * (Math.random() * 0.1 - 0.05 + -(car.x - playerpos.x) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
+                vely: 8 * (Math.random() * 0.1 - 0.05 + -(car.y - playerpos.y) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
+                weight: 0,
+                color1: { r: 136, g: 242, b: 70 },
+                color2: { r: 255, g: 255, b: 255 },
+                trail: true,
+                damage: 25
+            })
+        }
 
         //physics 2
         if (mouseIsPressed) {
@@ -85,10 +100,15 @@ function updatecar() {
                     if (Math.abs(car.x - playerpos.x) < 5 && car.type == "military") {
                         car.hp -= 2
                     }
-                    if (Math.abs(car.x - playerpos.x) < 20 && (car.type == "tank" || car.type == "AAAcar")) {
+                    if (Math.abs(car.x - playerpos.x) < 5 &&  car.type == "AAAcar") {
                         car.hp -= 1
                     }
-
+                    if (Math.abs(car.x - playerpos.x) < 20 && car.type == "tank") {
+                        car.hp -= 1
+                    }
+                    if (Math.abs(car.x - playerpos.x) < 20 && car.type == "AAAtank") {
+                        car.hp -= 0.25
+                    }
                 }
             }
 
@@ -122,6 +142,13 @@ function updatecar() {
                         car.velx *= 0.85;
                         car.velr += (playervel.x / 80);
                     }
+                    if (car.type == "AAAtank") {
+                        car.vely += (playervel.y / 45) - 0.1;
+                        car.velx += (playerpos.x - car.x) / 80;
+                        car.vely *= 0.9;
+                        car.velx *= 0.9;
+                        car.velr += (playervel.x / 160);
+                    }
                 }
             }
         }
@@ -148,7 +175,7 @@ function updatecar() {
 
         if (car.hp > 7 && car.y >= (car.leftlane ? 544 : 524)) {
             if (car.r > -2 && car.r < 2) {
-                if (discovered && (car.type == "tank" || car.type == "police" || car.type == "military" || car.type == "AAAcar")) {
+                if (discovered && (car.type == "tank" || car.type == "police" || car.type == "military" || car.type == "AAAcar" || car.type == "AAAtank")) {
                     if (Math.abs(car.x - playerpos.x) > 200 && car.type == "tank") {
                         if (car.x < playerpos.x) {
                             car.velx += 0.2 * (Math.random() * 0.5 + 0.7)
@@ -157,6 +184,13 @@ function updatecar() {
                         }
                     }
                     if (Math.abs(car.x - playerpos.x) > 100 && car.type == "police") {
+                        if (car.x < playerpos.x) {
+                            car.velx += 0.4 * (Math.random() * 0.5 + 0.7)
+                        } else {
+                            car.velx += -0.4 * (Math.random() * 0.5 + 0.7)
+                        }
+                    }
+                    if (Math.abs(car.x - playerpos.x) > 100 && car.type == "AAAtank") {
                         if (car.x < playerpos.x) {
                             car.velx += 0.4 * (Math.random() * 0.5 + 0.7)
                         } else {
@@ -191,7 +225,7 @@ function updatecar() {
                 if (car.type == "truck") {
                     car.r *= 0.99;
                 }
-                if (car.type == "tank") {
+                if (car.type == "tank" || car.type == "AAAtank") {
                     car.r *= 0.95;
                 }
             }
@@ -228,7 +262,11 @@ function updatecar() {
             }
             if (car.type == "AAAcar") {
                 score += 4;
-                explosion(car.x, car.y, 5, 2, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, car.velx, car.vely);
+                explosion(car.x, car.y, 5, 2, { r: 136, g: 242, b: 70 }, { r: 255, g: 255, b: 70 }, car.velx, car.vely);
+            }
+            if (car.type == "AAAtank") {
+                score += 10;
+                explosion(car.x, car.y, 10, 7, { r: 136, g: 242, b: 70 }, { r: 255, g: 255, b: 70 }, car.velx, car.vely);
             }
         }
     }
@@ -400,6 +438,41 @@ function drawcar() {
                 line(0, 0, 16, 0)
             }
             noStroke();
+        }
+
+        if (car.type == "AAAtank") {
+            colorMode(RGB)
+            fill("#070707")
+            if (car.hp > 7)
+                fill("#161616")
+            rect(-25, 4, 22, 10, 3)
+            rect(3, 4, 22, 10, 3)
+
+            fill("#BCA33C")
+            if (car.hp > 7)
+                fill("#E5C649")
+            rect(-27, -11, 53, 19)
+            circle(0, -13, 39)
+
+            fill("#AD9430")
+            if (car.hp > 7)
+                fill("#D3B53B")
+            circle(0, -13, 27)
+
+            stroke("#998124");
+            if (car.hp > 7)
+                stroke("#BCA02D");
+            strokeWeight(10);
+            if (discovered) {
+                let direction = { x: car.x - playerpos.x, y: -(car.y - playerpos.y) }
+                if (car.leftlane) {
+                    direction.x *= -1
+                }
+                let length = getlength(direction)
+                line(0, -13, direction.x / length * 16, direction.y / length * 16 - 13)
+            } else {
+                line(0, -13, 16, -13)
+            }
         }
         resetMatrix();
     }
