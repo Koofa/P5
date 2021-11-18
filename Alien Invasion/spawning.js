@@ -17,6 +17,16 @@ function spawning() {
                 }
             }
         } else {
+            if (Math.random() > 0.9 && score >= 1500) {
+                spawnTank(left)
+            }
+            if (Math.random() > 0.5 && score >= 1500) {
+                spawnMilitary(left)
+            } else {
+                if (Math.random() > 0.9 && score >= 1500) {
+                    spawnHelimilitary(left)
+                }
+            }
             if (Math.random() > 0.8 && score >= 1500) {
                 spawnAAAcar(left)
             }

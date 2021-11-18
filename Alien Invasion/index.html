@@ -136,12 +136,17 @@
             for (const bullet of bullets) {
                 let positions = { x: playerpos.x - bullet.x, y: playerpos.y - bullet.y }
                 let distance = getlength(positions) + 1
+                if (bullet.homing) {
+                    bullet.velx += (playerpos.x - bullet.x) / distance / 3
+                    bullet.vely += (playerpos.y - bullet.y) / distance / 3
+                }
                 distance *= distance
                 bullet.velx += (bullet.x - playerpos.x) / distance * 3 * magnet
                 bullet.vely += (bullet.y - playerpos.y) / distance * 3 * magnet
                 bullet.x += bullet.velx;
                 bullet.y += bullet.vely;
                 bullet.vely += bullet.weight / 100;
+
                 if (Math.abs(bullet.velx) + Math.abs(bullet.vely) < 3 && bullet.weight == 0)
                     bullet.vely += 0.01
                 if (Math.abs(playerpos.y - bullet.y) + Math.abs(playerpos.x - bullet.x) < 60)
@@ -159,7 +164,7 @@
             }
 
             bullets = bullets.filter(bullet => Math.abs(bullet.y - playerpos.y) + Math.abs(bullet.x - playerpos.x) > 20);
-            bullets = bullets.filter(bullet => bullet.y < 544 && bullet.y > -50 && bullet.x > -1207 && bullet.x < 2011);
+            bullets = bullets.filter(bullet => bullet.y < 544 && bullet.y > -1050 && bullet.x > -1207 && bullet.x < 2011);
 
             //explosoirn
             for (const particle of explosionparticles) {

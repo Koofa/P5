@@ -74,7 +74,7 @@ function updatecar() {
         }
         if (car.type == "AAAtank" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.9 && Math.sin(tijd / 100) > 0.9) {
             bullets.push({
-                x: car.x,
+                x: car.x + 6,
                 y: car.y,
                 size: 8,
                 velx: 8 * (Math.random() * 0.1 - 0.05 + -(car.x - playerpos.x) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
@@ -83,6 +83,20 @@ function updatecar() {
                 color1: { r: 136, g: 242, b: 70 },
                 color2: { r: 255, g: 255, b: 255 },
                 trail: true,
+                homing: true,
+                damage: 25
+            })
+            bullets.push({
+                x: car.x - 6,
+                y: car.y,
+                size: 8,
+                velx: 8 * (Math.random() * 0.1 - 0.05 + -(car.x - playerpos.x) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
+                vely: 8 * (Math.random() * 0.1 - 0.05 + -(car.y - playerpos.y) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
+                weight: 0,
+                color1: { r: 136, g: 242, b: 70 },
+                color2: { r: 255, g: 255, b: 255 },
+                trail: true,
+                homing: true,
                 damage: 25
             })
         }
@@ -100,14 +114,14 @@ function updatecar() {
                     if (Math.abs(car.x - playerpos.x) < 5 && car.type == "military") {
                         car.hp -= 2
                     }
-                    if (Math.abs(car.x - playerpos.x) < 5 &&  car.type == "AAAcar") {
-                        car.hp -= 1
+                    if (Math.abs(car.x - playerpos.x) < 5 && car.type == "AAAcar") {
+                        car.hp -= 4
                     }
                     if (Math.abs(car.x - playerpos.x) < 20 && car.type == "tank") {
                         car.hp -= 1
                     }
                     if (Math.abs(car.x - playerpos.x) < 20 && car.type == "AAAtank") {
-                        car.hp -= 0.25
+                        car.hp -= 3
                     }
                 }
             }
@@ -459,20 +473,21 @@ function drawcar() {
                 fill("#D3B53B")
             circle(0, -13, 27)
 
+            let direction = { x: car.x - playerpos.x, y: -(car.y - playerpos.y) }
+            if (car.leftlane) {
+                direction.x *= -1
+            }
+            translate(0, -13)
+            rotate(Math.atan2(direction.y, direction.x))
+            strokeCap(PROJECT);
             stroke("#998124");
             if (car.hp > 7)
                 stroke("#BCA02D");
-            strokeWeight(10);
-            if (discovered) {
-                let direction = { x: car.x - playerpos.x, y: -(car.y - playerpos.y) }
-                if (car.leftlane) {
-                    direction.x *= -1
-                }
-                let length = getlength(direction)
-                line(0, -13, direction.x / length * 16, direction.y / length * 16 - 13)
-            } else {
-                line(0, -13, 16, -13)
-            }
+            strokeWeight(8);
+            line(0, 6, 20, 6)
+            line(0, -6, 20, -6)
+            strokeCap(ROUND);
+            noStroke()
         }
         resetMatrix();
     }
