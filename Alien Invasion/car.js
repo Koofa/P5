@@ -21,6 +21,7 @@ function updatecar() {
         //shooting
         if (car.type == "police" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.995) {
             bullets.push({
+                type: "police",
                 x: car.x,
                 y: car.y,
                 size: 5,
@@ -35,6 +36,7 @@ function updatecar() {
         if (car.type == "AAAcar" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.99) {
             bullets.push({
                 x: car.x,
+                type: "AAAcar",
                 y: car.y,
                 size: 5,
                 velx: 12 * (Math.random() * 0.1 - 0.05 + -(car.x - playerpos.x) / Math.sqrt((Math.abs(car.x - playerpos.x) * Math.abs(car.x - playerpos.x)) + (Math.abs(car.y - playerpos.y) * Math.abs(car.y - playerpos.y)))),
@@ -48,6 +50,7 @@ function updatecar() {
         }
         if (car.type == "military" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.92 && Math.sin(tijd / 200) > 0.5) {
             bullets.push({
+                type: "military",
                 x: car.x,
                 y: car.y,
                 size: 5,
@@ -61,6 +64,7 @@ function updatecar() {
         }
         if (car.type == "tank" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.95 && Math.sin(tijd / 100) > 0.9) {
             bullets.push({
+                type: "tank",
                 x: car.x,
                 y: car.y,
                 size: 8,
@@ -74,6 +78,7 @@ function updatecar() {
         }
         if (car.type == "AAAtank" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.9 && Math.sin(tijd / 100) > 0.9) {
             bullets.push({
+                type: "AAAtank",
                 x: car.x + 6,
                 y: car.y,
                 size: 8,
@@ -83,10 +88,12 @@ function updatecar() {
                 color1: { r: 136, g: 242, b: 70 },
                 color2: { r: 255, g: 255, b: 255 },
                 trail: true,
+                age: 0,
                 homing: true,
                 damage: 25
             })
             bullets.push({
+                type: "AAAtank",
                 x: car.x - 6,
                 y: car.y,
                 size: 8,
@@ -96,6 +103,7 @@ function updatecar() {
                 color1: { r: 136, g: 242, b: 70 },
                 color2: { r: 255, g: 255, b: 255 },
                 trail: true,
+                age: 0,
                 homing: true,
                 damage: 25
             })
@@ -106,19 +114,19 @@ function updatecar() {
             if (mouseButton === CENTER) {
                 if (car.y > playerpos.y) {
                     if (Math.abs(car.x - playerpos.x) < 5 && (car.type == "car" || car.type == "police")) {
-                        car.hp -= 3
+                        car.hp -= 6
                     }
                     if (Math.abs(car.x - playerpos.x) < 20 && car.type == "truck") {
-                        car.hp -= 2
-                    }
-                    if (Math.abs(car.x - playerpos.x) < 5 && car.type == "military") {
-                        car.hp -= 2
-                    }
-                    if (Math.abs(car.x - playerpos.x) < 5 && car.type == "AAAcar") {
                         car.hp -= 4
                     }
+                    if (Math.abs(car.x - playerpos.x) < 5 && car.type == "military") {
+                        car.hp -= 4
+                    }
+                    if (Math.abs(car.x - playerpos.x) < 5 && car.type == "AAAcar") {
+                        car.hp -= 6
+                    }
                     if (Math.abs(car.x - playerpos.x) < 20 && car.type == "tank") {
-                        car.hp -= 1
+                        car.hp -= 2
                     }
                     if (Math.abs(car.x - playerpos.x) < 20 && car.type == "AAAtank") {
                         car.hp -= 3
@@ -294,7 +302,7 @@ function drawcar() {
         if (car.type == "car" || car.type == "police" || car.type == "military" || car.type == "AAAcar") {
             ellipse(car.x - getcamx(), (car.leftlane ? 544 : 524) + 13 - getcamy(), 25, 10);
         }
-        if (car.type == "truck" || car.type == "tank") {
+        if (car.type == "truck" || car.type == "tank" || car.type == "AAAtank") {
             ellipse(car.x - getcamx(), (car.leftlane ? 544 : 524) + 13 - getcamy(), 75, 10);
         }
 

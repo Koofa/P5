@@ -33,7 +33,7 @@ function updatehuman(human) {
     human.r += human.velr;
 
     //movement
-    if (human.y > 520) {
+    if (human.y > 517) {
         if (Math.abs(human.vely) + Math.abs(human.velr) + (Math.abs(human.velx) / 5) > 5) {
             human.hp -= ((Math.abs(human.vely) * 3) + Math.abs(human.velr) + (Math.abs(human.velx / 10))) / 2
         }
@@ -44,10 +44,10 @@ function updatehuman(human) {
         }
         human.velr *= 0.8;
 
-        human.y = 520;
+        human.y = 517;
         human.vely = -human.vely / 2;
     }
-    if (human.hp > 0.7 && human.y >= 520) {
+    if (human.hp > 0.7 && human.y >= 517) {
         if (human.r > -2 && human.r < 2) {
             if (discovered) {
                 human.velx += (human.leftlane ? 0.2 : -0.2);
@@ -81,7 +81,7 @@ function drawhuman() {
         colorMode(HSB)
         fill(human.hue, 90, 60)
         triangle(-6, 6, 0, -4, 6, 6)
-        fill("#CC7F63")
+        fill(16, human.skinV, human.skinB)
         circle(0, -6, 6)
         resetMatrix();
     }

@@ -119,7 +119,7 @@
                 playervel.y += Math.random() * 4 - 2;
                 explosion(playerpos.x - (Math.random() * 40 - 20), playerpos.y - (Math.random() * 20 - 10), 1, 1, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, playervel.x, playervel.y)
             }
-            
+
             spawning();
 
             if (campos.x > 1200)
@@ -137,8 +137,13 @@
                 let positions = { x: playerpos.x - bullet.x, y: playerpos.y - bullet.y }
                 let distance = getlength(positions) + 1
                 if (bullet.homing) {
-                    bullet.velx += (playerpos.x - bullet.x) / distance / 3
-                    bullet.vely += (playerpos.y - bullet.y) / distance / 3
+                    bullet.age += deltaTime / 1000;
+                    bullet.velx += (playerpos.x - bullet.x) / distance / 10
+                    bullet.vely += (playerpos.y - bullet.y) / distance / 10
+                    if (Math.abs(bullet.velx) + Math.abs(bullet.vely) > 10) {
+                        bullet.velx *= 0.9
+                        bullet.vely *= 0.9
+                    }
                 }
                 distance *= distance
                 bullet.velx += (bullet.x - playerpos.x) / distance * 3 * magnet
@@ -159,10 +164,23 @@
                             health -= bullet.damage;
                     }
                 if (bullet.y > 544) {
-                    explosion(bullet.x, bullet.y, bullet.damage / 8, bullet.damage / 8, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, bullet.velx, bullet.vely)
+                    if (bullet.type == "AAAcar" || bullet.type == "AAAtank"){
+                        explosion(bullet.x, bullet.y, bullet.damage / 8, bullet.damage / 8, { r: 136, g: 242, b: 70 }, { r: 255, g: 255, b: 70 }, bullet.velx, bullet.vely)
+                    }else{
+                        explosion(bullet.x, bullet.y, bullet.damage / 8, bullet.damage / 8, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, bullet.velx, bullet.vely)
+                    }
+                    
+                }
+                if (bullet.age >= 5) {
+                    if (bullet.type == "AAAcar" || bullet.type == "AAAtank"){
+                        explosion(bullet.x, bullet.y, bullet.damage / 8, bullet.damage / 8, { r: 136, g: 242, b: 70 }, { r: 255, g: 255, b: 70 }, bullet.velx, bullet.vely)
+                    }else{
+                        explosion(bullet.x, bullet.y, bullet.damage / 8, bullet.damage / 8, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, bullet.velx, bullet.vely)
+                    }
                 }
             }
 
+            bullets = bullets.filter(bullet => bullet.age < 5);
             bullets = bullets.filter(bullet => Math.abs(bullet.y - playerpos.y) + Math.abs(bullet.x - playerpos.x) > 20);
             bullets = bullets.filter(bullet => bullet.y < 544 && bullet.y > -1050 && bullet.x > -1207 && bullet.x < 2011);
 

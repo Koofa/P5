@@ -27,10 +27,10 @@ function spawning() {
                     spawnHelimilitary(left)
                 }
             }
-            if (Math.random() > 0.8 && score >= 1500) {
+            if (Math.random() > 0.95 && score >= 1500) {
                 spawnAAAcar(left)
             }
-            if (Math.random() > 0.95 && score >= 1500) {
+            if (Math.random() > 0.99 && score >= 1500) {
                 spawnAAAtank(left)
             }
         }
@@ -58,8 +58,10 @@ function spawnHuman(left) {
     humans.push({
         leftlane: left,
         hue: Math.random() * 360,
+        skinV: (Math.random() * 255 / 100 + 10) * 5,
+        skinB: Math.random() * 255 / 100 * 60 + 20,
         x: left ? -1300 : 2031,
-        y: 520,
+        y: 517,
         hp: 1,
         velx: 0,
         vely: 0,
