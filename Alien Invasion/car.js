@@ -80,7 +80,7 @@ function updatecar() {
                 damage: 50
             })
         }
-        if (car.type == "AAAtank" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.9 && Math.sin(tijd / 100) > 0.9) {
+        if (car.type == "AAAtank" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.95 && Math.sin(tijd / 100) > 0.9) {
             bullets.push({
                 type: "AAAtank",
                 x: car.x + 6,

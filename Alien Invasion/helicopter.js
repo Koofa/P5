@@ -33,6 +33,7 @@ function updatehelicopter() {
                 weight: 0,
                 color1: { r: 255, g: 255, b: 0 },
                 color2: { r: 255, g: 255, b: 255 },
+                age: 0,
                 damage: 6
             })
         }
@@ -46,13 +47,14 @@ function updatehelicopter() {
                 weight: 0,
                 color1: { r: 255, g: 255, b: 0 },
                 color2: { r: 255, g: 255, b: 255 },
+                age: 0,
                 damage: 6
             })
         }
 
         //movement
         if (discovered) {
-            if (heli.hp > 7) {
+            if (heli.hp > 14) {
                 if ((Math.abs(heli.x - playerpos.x) + Math.abs(heli.y - playerpos.y)) < 100) {
                     if (playerpos.x < heli.x) {
                         heli.velx += Math.random() * 0.15 + 0.15;
@@ -83,16 +85,16 @@ function updatehelicopter() {
                 }
             }
         } else {
-            if (heli.hp > 7) {
+            if (heli.hp > 14) {
                 heli.velx += (heli.left ? 0.1 : -0.1)
             }
         }
 
-        if (heli.hp <= 7) {
+        if (heli.hp <= 14) {
             heli.rotorspeed += 1
             heli.vely += 0.2;
         }
-        if (heli.hp > 7) {
+        if (heli.hp > 14) {
             heli.rotorspeed = 0
             if (heli.y < 416) {
                 if (Math.sin(tijd / 200) > 0) {

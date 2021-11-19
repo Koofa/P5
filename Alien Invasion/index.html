@@ -221,10 +221,10 @@
                 projectile.x += projectile.velx;
                 projectile.y += projectile.vely;
                 if (projectile.y > 544) {
-                    explosion(projectile.x, projectile.y, 4, 6, { r: 174, g: 0, b: 255 }, { r: 215, g: 135, b: 255 });
+                    explosion(projectile.x, projectile.y, 5, 7, { r: 174, g: 0, b: 255 }, { r: 215, g: 135, b: 255 });
                 }
                 if (projectile.expired) {
-                    explosion(projectile.x, projectile.y, 4, 6, { r: 174, g: 0, b: 255 }, { r: 215, g: 135, b: 255 });
+                    explosion(projectile.x, projectile.y, 5, 7, { r: 174, g: 0, b: 255 }, { r: 215, g: 135, b: 255 });
                 }
             }
             projectiles = projectiles.filter(projectile => projectile.y < 544 && !projectile.expired);
@@ -364,7 +364,7 @@
 
         }
         function drawgebouwen() {
-            fill(50)
+            fill(40)
             for (const building of buildings) {
                 rect(building.x - getcamx() / building.depth, building.y - getcamy(), building.sizex, building.sizey)
             }

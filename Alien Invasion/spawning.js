@@ -6,15 +6,14 @@ function spawning() {
             if (Math.random() > 0.9 && score > 350) {
                 spawnHelipolice(left)
             }
-            if (Math.random() > 0.9 && score > 700) {
+            if (Math.random() > 0.8 && score > 700) {
                 spawnTank(left)
             }
             if (Math.random() > 0.5 && score > 500) {
                 spawnMilitary(left)
-            } else {
-                if (Math.random() > 0.9) {
-                    spawnHelimilitary(left)
-                }
+            }
+            if (Math.random() > 0.9) {
+                spawnHelimilitary(left)
             }
         } else {
             if (Math.random() > 0.9 && score >= 1500) {
@@ -22,10 +21,9 @@ function spawning() {
             }
             if (Math.random() > 0.5 && score >= 1500) {
                 spawnMilitary(left)
-            } else {
-                if (Math.random() > 0.9 && score >= 1500) {
-                    spawnHelimilitary(left)
-                }
+            }
+            if (Math.random() > 0.9 && score >= 1500) {
+                spawnHelimilitary(left)
             }
             if (Math.random() > 0.95 && score >= 1500) {
                 spawnAAAcar(left)
@@ -168,7 +166,7 @@ function spawnHelipolice(left) {
         left: left,
         x: left ? -1300 : 2031,
         y: 254,
-        hp: 20,
+        hp: 30,
         velx: 0,
         vely: 0,
         r: 0,
@@ -182,7 +180,7 @@ function spawnHelimilitary(left) {
         left: left,
         x: left ? -1300 : 2031,
         y: 254,
-        hp: 25,
+        hp: 40,
         velx: 0,
         vely: 0,
         r: 0,
