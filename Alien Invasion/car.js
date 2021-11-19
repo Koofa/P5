@@ -30,6 +30,7 @@ function updatecar() {
                 weight: 0,
                 color1: { r: 255, g: 255, b: 0 },
                 color2: { r: 255, g: 255, b: 255 },
+                age: 0,
                 damage: 6
             })
         }
@@ -44,6 +45,7 @@ function updatecar() {
                 weight: 0,
                 color1: { r: 136, g: 242, b: 70 },
                 color2: { r: 255, g: 255, b: 255 },
+                age: 0,
                 trail: true,
                 damage: 6
             })
@@ -59,6 +61,7 @@ function updatecar() {
                 weight: 0,
                 color1: { r: 255, g: 255, b: 0 },
                 color2: { r: 255, g: 255, b: 255 },
+                age: 0,
                 damage: 6
             })
         }
@@ -73,6 +76,7 @@ function updatecar() {
                 weight: 2,
                 color1: { r: 255, g: 58, b: 0 },
                 color2: { r: 255, g: 255, b: 255 },
+                age: 0,
                 damage: 50
             })
         }
