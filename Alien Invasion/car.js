@@ -94,7 +94,7 @@ function updatecar() {
                 trail: true,
                 age: 0,
                 homing: true,
-                damage: 25
+                damage: 50
             })
             bullets.push({
                 type: "AAAtank",
@@ -109,7 +109,7 @@ function updatecar() {
                 trail: true,
                 age: 0,
                 homing: true,
-                damage: 25
+                damage: 50
             })
         }
 
@@ -133,7 +133,7 @@ function updatecar() {
                         car.hp -= 2
                     }
                     if (Math.abs(car.x - playerpos.x) < 20 && car.type == "AAAtank") {
-                        car.hp -= 3
+                        car.hp -= 2.5
                     }
                 }
             }
@@ -218,9 +218,9 @@ function updatecar() {
                     }
                     if (Math.abs(car.x - playerpos.x) > 100 && car.type == "AAAtank") {
                         if (car.x < playerpos.x) {
-                            car.velx += 0.4 * (Math.random() * 0.5 + 0.7)
+                            car.velx += 0.7 * (Math.random() * 0.5 + 0.7)
                         } else {
-                            car.velx += -0.4 * (Math.random() * 0.5 + 0.7)
+                            car.velx += -0.7 * (Math.random() * 0.5 + 0.7)
                         }
                     }
                     if (Math.abs(car.x - playerpos.x) > 100 && car.type == "military") {
@@ -288,11 +288,11 @@ function updatecar() {
             }
             if (car.type == "AAAcar") {
                 score += 4;
-                explosion(car.x, car.y, 5, 2, { r: 136, g: 242, b: 70 }, { r: 255, g: 255, b: 70 }, car.velx, car.vely);
+                explosion(car.x, car.y, 6, 3, { r: 136, g: 242, b: 70 }, { r: 255, g: 255, b: 70 }, car.velx, car.vely);
             }
             if (car.type == "AAAtank") {
                 score += 10;
-                explosion(car.x, car.y, 10, 7, { r: 136, g: 242, b: 70 }, { r: 255, g: 255, b: 70 }, car.velx, car.vely);
+                explosion(car.x, car.y, 14, 7, { r: 136, g: 242, b: 70 }, { r: 255, g: 255, b: 70 }, car.velx, car.vely);
             }
         }
     }

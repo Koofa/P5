@@ -153,7 +153,7 @@ function spawnAAAtank(left) {
         leftlane: left,
         x: left ? -1300 : 2031,
         y: 544,
-        hp: 45,
+        hp: 50,
         velx: 0,
         vely: 0,
         r: 0,

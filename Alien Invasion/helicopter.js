@@ -1,7 +1,7 @@
 function updatehelicopter() {
     for (const heli of helicopters) {
         //physics 1
-        if (heli.hp > 7) {
+        if (heli.hp > 14) {
             heli.velx *= 0.97
             heli.vely *= 0.97
             heli.velr *= 0.9
@@ -37,7 +37,7 @@ function updatehelicopter() {
                 damage: 6
             })
         }
-        if (discovered && heli.hp > 7 && heli.type == "military" && Math.random() > 0.92 && Math.sin(tijd / 200) > 0.5 && Math.abs(heli.x - playerpos.x) < 1000) {
+        if (discovered && heli.hp > 14 && heli.type == "military" && Math.random() > 0.92 && Math.sin(tijd / 200) > 0.5 && Math.abs(heli.x - playerpos.x) < 1000) {
             bullets.push({
                 x: heli.x,
                 y: heli.y,
@@ -129,10 +129,10 @@ function updatehelicopter() {
         }
         if (heli.y > 544) {
             if (Math.abs(heli.vely) > 2) {
-                heli.hp -= ((Math.abs(heli.vely) * 3) + Math.abs(heli.velr) + (Math.abs(heli.velx))) / 2
+                heli.hp -= (Math.abs(heli.vely) * 3) + Math.abs(heli.velr) + (Math.abs(heli.velx))
             }
             heli.y = 544
-            heli.vely = 0
+            heli.vely = -heli.vely / 4;
         }
 
         projectiles.forEach(projectile => {
@@ -145,7 +145,7 @@ function updatehelicopter() {
         //death
         if (heli.hp <= 0) {
             score += 2;
-            explosion(heli.x, heli.y, 11, 8, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, heli.velx, heli.vely);
+            explosion(heli.x, heli.y, 14, 10, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, heli.velx, heli.vely);
         }
     }
     helicopters = helicopters.filter(heli => heli.hp > 0 && heli.x < 2035 && heli.x > -1301);
@@ -166,7 +166,7 @@ function drawhelicopter() {
         }
         colorMode(RGB);
         if (heli.type == "military") {
-            if (heli.hp < 7) {
+            if (heli.hp < 14) {
                 stroke("#21280D")
             } else {
                 stroke("#323D14")
@@ -176,7 +176,7 @@ function drawhelicopter() {
             line(-17, 28, 41, 28)
             strokeWeight(2)
             rect(-4, -16, 6, 9)
-            if (heli.hp < 7) {
+            if (heli.hp < 14) {
                 fill("#39421B")
                 stroke("#39421B")
             } else {
@@ -200,7 +200,7 @@ function drawhelicopter() {
         }
 
         if (heli.type == "police") {
-            if (heli.hp < 7) {
+            if (heli.hp < 14) {
                 stroke("#070707")
             } else {
                 stroke("#070707")
@@ -210,7 +210,7 @@ function drawhelicopter() {
             line(-24, 19, 32, 19)
             noStroke()
 
-            if (heli.hp < 7) {
+            if (heli.hp < 14) {
                 fill("#070707")
             } else {
                 fill("#161616")
@@ -220,7 +220,7 @@ function drawhelicopter() {
             rect(-76, -6, 54, 5)
             rect(-6, -15, 5, 6)
 
-            if (heli.hp < 7) {
+            if (heli.hp < 14) {
                 fill("#898989")
             } else {
                 fill("#D3D3D3")
