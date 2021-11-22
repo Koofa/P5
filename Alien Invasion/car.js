@@ -114,7 +114,7 @@ function updatecar() {
         }
 
         //physics 2
-        if (mouseIsPressed) {
+        if (mouseIsPressed && health > 0) {
             if (mouseButton === CENTER) {
                 if (car.y > playerpos.y) {
                     if (Math.abs(car.x - playerpos.x) < 5 && (car.type == "car" || car.type == "police")) {
@@ -259,7 +259,20 @@ function updatecar() {
 
         projectiles.forEach(projectile => {
             if (Math.abs(car.x - projectile.x) + Math.abs(car.y - projectile.y) < 50) {
-                car.hp += -5;
+                if (car.type == "car")
+                    car.hp += -10;
+                if (car.type == "truck")
+                    car.hp += -9;
+                if (car.type == "police")
+                    car.hp += -10;
+                if (car.type == "military")
+                    car.hp += -8;
+                if (car.type == "tank")
+                    car.hp += -6;
+                if (car.type == "AAAcar")
+                    car.hp += -8;
+                if (car.type == "AAAtank")
+                    car.hp += -7;
                 projectile.expired = true;
             }
         });

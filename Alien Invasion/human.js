@@ -13,7 +13,7 @@ function updatehuman(human) {
     human.vely += 0.1;
     human.velr *= 0.99;
 
-    if (mouseIsPressed) {
+    if (mouseIsPressed && health > 0) {
         if (mouseButton === CENTER && human.y > playerpos.y && Math.abs(human.x - playerpos.x) < 2) {
             human.hp -= 10
         }

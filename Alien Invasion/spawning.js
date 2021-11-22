@@ -16,20 +16,35 @@ function spawning() {
                 spawnHelimilitary(left)
             }
         } else {
-            if (Math.random() > 0.9 && score >= 1500) {
-                spawnTank(left)
-            }
-            if (Math.random() > 0.5 && score >= 1500) {
-                spawnMilitary(left)
-            }
-            if (Math.random() > 0.9 && score >= 1500) {
-                spawnHelimilitary(left)
-            }
-            if (Math.random() > 0.95 && score >= 1500) {
-                spawnAAAcar(left)
-            }
-            if (Math.random() > 0.99 && score >= 1500) {
-                spawnAAAtank(left)
+            if (score < 2500) {
+                if (Math.random() > 0.9 && score >= 1500) {
+                    spawnTank(left)
+                }
+                if (Math.random() > 0.5 && score >= 1500) {
+                    spawnMilitary(left)
+                }
+                if (Math.random() > 0.9 && score >= 1500) {
+                    spawnHelimilitary(left)
+                }
+                if (Math.random() > 0.95 && score >= 1500) {
+                    spawnAAAcar(left)
+                }
+                if (Math.random() > 0.99 && score >= 1700) {
+                    spawnAAAtank(left)
+                }
+                if (Math.random() > 0.99 && score >= 2000) {
+                    spawnHeliAAA(left)
+                }
+            } else {
+                if (Math.random() > 0.7) {
+                    spawnAAAcar(left)
+                }
+                if (Math.random() > 0.9) {
+                    spawnAAAtank(left)
+                }
+                if (Math.random() > 0.9) {
+                    spawnHeliAAA(left)
+                }
             }
         }
         if (score < 300 || (score < 700 && Math.random() > 0.9)) {
@@ -167,6 +182,7 @@ function spawnHelipolice(left) {
         x: left ? -1300 : 2031,
         y: 254,
         hp: 30,
+        speed: 1,
         velx: 0,
         vely: 0,
         r: 0,
@@ -181,6 +197,22 @@ function spawnHelimilitary(left) {
         x: left ? -1300 : 2031,
         y: 254,
         hp: 40,
+        speed: 1,
+        velx: 0,
+        vely: 0,
+        r: 0,
+        velr: 0,
+        rotorspeed: 0
+    })
+}
+function spawnHeliAAA(left) {
+    helicopters.push({
+        type: "AAA",
+        left: left,
+        x: left ? -1300 : 2031,
+        y: 254,
+        hp: 60,
+        speed: 2,
         velx: 0,
         vely: 0,
         r: 0,

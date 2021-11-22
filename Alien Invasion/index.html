@@ -9,13 +9,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"
         integrity="sha512-N4kV7GkNv7QR7RX9YF/olywyIgIwNvfEe2nZtfyj73HdjCUkAfOBDbcuJ/cTaN04JKRnw1YG1wnUyNKMsNgg3g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.js"
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.js"
         integrity="sha512-U2sgwrFhl+Tgx9iGH9h5Ba2WyIjyCes+D0prtIFw3a0V+/fkaeL5Cd/VjyPHno9kUPE1rnNhBGTyvtZsfJp0xg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>
-    <!-- <script src="sounds.js"></script> -->
+    <script src="sounds.js"></script>
     <script>
         function getlength(vector) {
             return Math.sqrt(vector.x * vector.x + vector.y * vector.y)
@@ -78,13 +78,24 @@
         }
         function update() {
             tijd += deltaTime;
-            playervel.x += (mouseX + campos.x - playerpos.x) / 4;
-            playervel.y += (mouseY + campos.y - playerpos.y) / 4;
-            playervel.r += playervel.x / 20;
-            playervel.x *= 0.4;
-            playervel.y *= 0.4;
-            playervel.r *= 0.9;
-            playerpos.r *= 0.6;
+            if (health > 0) {
+                playervel.x += (mouseX + campos.x - playerpos.x) / 4;
+                playervel.y += (mouseY + campos.y - playerpos.y) / 4;
+                playervel.r += playervel.x / 20;
+                playervel.x *= 0.4;
+                playervel.y *= 0.4;
+                playervel.r *= 0.9;
+                playerpos.r *= 0.6;
+            } else {
+                playervel.y -= -0.2;
+                playervel.x *= 0.90;
+                playervel.r *= 0.90;
+                discovered = false
+                if (playerpos.y >= 544) {
+                    explosion(playerpos.x, playerpos.y, 35, 60, { r: 174, g: 0, b: 255 }, { r: 215, g: 135, b: 255 })
+                    playerpos.y = -100000000000000
+                }
+            }
             playerpos.x += playervel.x;
             playerpos.y += playervel.y;
             playerpos.r += playervel.r;
@@ -102,7 +113,7 @@
 
             magnet *= 0.9;
 
-            if (score >= 5) {
+            if (score >= 5 && health > 0) {
                 discovered = true;
             }
 
@@ -164,17 +175,17 @@
                             health -= bullet.damage;
                     }
                 if (bullet.y > 544) {
-                    if (bullet.type == "AAAcar" || bullet.type == "AAAtank"){
+                    if (bullet.type == "AAAcar" || bullet.type == "AAAtank") {
                         explosion(bullet.x, bullet.y, bullet.damage / 8, bullet.damage / 8, { r: 136, g: 242, b: 70 }, { r: 255, g: 255, b: 70 }, bullet.velx, bullet.vely)
-                    }else{
+                    } else {
                         explosion(bullet.x, bullet.y, bullet.damage / 8, bullet.damage / 8, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, bullet.velx, bullet.vely)
                     }
-                    
+
                 }
                 if (bullet.age >= 5) {
-                    if (bullet.type == "AAAcar" || bullet.type == "AAAtank"){
+                    if (bullet.type == "AAAcar" || bullet.type == "AAAtank") {
                         explosion(bullet.x, bullet.y, bullet.damage / 8, bullet.damage / 8, { r: 136, g: 242, b: 70 }, { r: 255, g: 255, b: 70 }, bullet.velx, bullet.vely)
-                    }else{
+                    } else {
                         explosion(bullet.x, bullet.y, bullet.damage / 8, bullet.damage / 8, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 }, bullet.velx, bullet.vely)
                     }
                 }
@@ -251,7 +262,7 @@
             return campos.y + camshakePos.y
         }
         function mousePressed() {
-            if (mouseButton === LEFT) {
+            if (mouseButton === LEFT && health > 0) {
                 weaponeffect = 0.9;
                 projectiles.push({
                     x: playerpos.x,
@@ -264,6 +275,18 @@
             }
         }
         function explosion(x, y, size, force, color1, color2, velx = 0, vely = 0) {
+            for (const particle of explosionparticles) {
+                if ((Math.abs(x - particle.x) + Math.abs(y - particle.y)) < (size + force) * 10) {
+                    let positions = { x: particle.x - x, y: particle.y - y }
+                    let length = getlength(positions)
+                    positions.x /= length
+                    positions.y /= length
+                    particle.velx += positions.x * (size + force) / 2 * Math.random()
+                    particle.vely += positions.y * (size + force) / 2 * Math.random()
+                    // particle.velx += ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2) / 2;
+                    // particle.vely -= ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2) / 2;
+                }
+            }
             camshakeVel.x += (Math.random() * force - force / 2) / 2;
             camshakeVel.y += (Math.random() * force - force / 2) / 2;
             for (const car of cars) {
@@ -394,9 +417,9 @@
             }
         }
         function drawtext(x, y, textsize, textstring, color, textfont) {
-            textSize(textsize);
             fill(color);
             textFont(textfont);
+            textSize(textsize);
             text(textstring, x, y);
         }
 
@@ -474,7 +497,7 @@
             fill("#444444");
             rect(0, 526 - getcamy(), 800, 500);
             drawstreetlines();
-            if (mouseIsPressed) {
+            if (mouseIsPressed && health > 0) {
                 if (mouseButton === RIGHT) {
                     drawbeam();
                 }
@@ -484,7 +507,7 @@
             drawcar();
             drawhelicopter();
 
-            if (mouseIsPressed) {
+            if (mouseIsPressed && health > 0) {
                 if (mouseButton === CENTER) {
                     drawlaser();
                     camshakeVel.x += (Math.random() - 0.5) / 2
@@ -496,12 +519,21 @@
             }
 
             drawbullet();
-            drawUFO();
+            if (playerpos.y < 544 || health > 0) {
+                drawUFO();
+            }
             drawprojectile();
             drawexplosionparticle();
-            drawtext(36, 63, 25, `score = ${score}`, "white", "impact");
-            drawtext(36, 83, 25, `health = ${health}`, "green", "impact");
-            drawtext(36, 103, 25, `shield = ${Math.floor(shield)}`, "blue", "impact");
+
+            if (health > 0) {
+                drawtext(36, 63, 25, `score = ${score}`, "#7539BF", "impact");
+                drawtext(36, 83, 25, `health = ${health}`, "#82C13A", "impact");
+                drawtext(36, 103, 25, `shield = ${Math.floor(shield)}`, "#3977BF", "impact");
+            } else {
+                textAlign(CENTER)
+                drawtext(400, 300, 80, "defeated", "#7A0800", "impact");
+                drawtext(400, 340, 25, `score = ${score}`, "white", "impact");
+            }
         }
     </script>
     <script src="car.js"></script>
