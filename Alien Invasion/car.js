@@ -20,7 +20,7 @@ function updatecar() {
 
         //shooting
         if (car.type == "police" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.995) {
-            pickrandom(gunshotSound).play(0, 1.4, 0.02)
+            pickrandom(gunshotSound).play(0, 1.4, 0.02 * volume)
             bullets.push({
                 type: "police",
                 x: car.x,
@@ -36,7 +36,7 @@ function updatecar() {
             })
         }
         if (car.type == "AAAcar" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.99) {
-            pickrandom(AAAgunshotSound).play(0, 1, 0.04)
+            pickrandom(AAAgunshotSound).play(0, 1, 0.04 * volume)
             bullets.push({
                 x: car.x,
                 type: "AAAcar",
@@ -53,7 +53,7 @@ function updatecar() {
             })
         }
         if (car.type == "military" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.92 && Math.sin(tijd / 400) > 0.5) {
-            pickrandom(gunshotSound).play(0, 1.4, 0.02)
+            pickrandom(gunshotSound).play(0, 1.4, 0.02 * volume)
             bullets.push({
                 type: "military",
                 x: car.x,
@@ -69,7 +69,7 @@ function updatecar() {
             })
         }
         if (car.type == "tank" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.95 && Math.sin(tijd / 100) > 0.9) {
-            pickrandom(tankshotSound).play(0, 0.5, 0.4)
+            pickrandom(tankshotSound).play(0, 0.5, 0.4 * volume)
             bullets.push({
                 type: "tank",
                 x: car.x,
@@ -85,7 +85,7 @@ function updatecar() {
             })
         }
         if (car.type == "AAAtank" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.95 && Math.sin(tijd / 100) > 0.9) {
-            pickrandom(AAAgunshotSound).play(0, 0.7, 0.09)
+            pickrandom(AAAgunshotSound).play(0, 0.7, 0.09 * volume)
             bullets.push({
                 type: "AAAtank",
                 x: car.x + 6,
@@ -191,7 +191,7 @@ function updatecar() {
         //movement
         if (car.y > (car.leftlane ? 544 : 524)) {
             if (Math.abs(car.vely) + Math.abs(car.velr) + (Math.abs(car.velx) / 5) > 5) {
-                pickrandom(vehicleimpactSound).play(0, 1, 0.04)
+                pickrandom(vehicleimpactSound).play(0, 1, 0.04 * volume)
                 car.hp -= ((Math.abs(car.vely) * 3) + Math.abs(car.velr) + (Math.abs(car.velx / 10))) / 2
             }
             if (car.hp > 7 && car.r > -2 && car.r < 2) {

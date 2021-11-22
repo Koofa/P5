@@ -31,7 +31,7 @@ function updatehelicopter() {
 
         //shooting
         if (discovered && heli.hp > 7 && heli.type == "police" && Math.random() > 0.99 && Math.abs(heli.x - playerpos.x) < 1000) {
-            pickrandom(gunshotSound).play(0, 1.4, 0.05)
+            pickrandom(gunshotSound).play(0, 1.4, 0.05 * volume)
             bullets.push({
                 x: heli.x,
                 y: heli.y,
@@ -46,7 +46,7 @@ function updatehelicopter() {
             })
         }
         if (discovered && heli.hp > 14 && heli.type == "military" && Math.random() > 0.92 && Math.sin(tijd / 200) > 0.5 && Math.abs(heli.x - playerpos.x) < 1000) {
-            pickrandom(gunshotSound).play(0, 1.4, 0.05)
+            pickrandom(gunshotSound).play(0, 1.4, 0.05 * volume)
             bullets.push({
                 x: heli.x,
                 y: heli.y,
@@ -61,7 +61,7 @@ function updatehelicopter() {
             })
         }
         if (discovered && heli.hp > 14 && heli.type == "AAA" && Math.random() > 0.92 && Math.sin(tijd / 200) > 0.5 && Math.abs(heli.x - playerpos.x) < 1000) {
-            pickrandom(AAAgunshotSound).play(0, 1, 0.04)
+            pickrandom(AAAgunshotSound).play(0, 1, 0.04 * volume)
             bullets.push({
                 x: heli.x,
                 y: heli.y,
