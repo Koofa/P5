@@ -169,6 +169,7 @@
                     if (shield > 0) {
                         shield -= bullet.damage;
                         bullets = bullets.filter(bullet => Math.abs(bullet.y - playerpos.y) + Math.abs(bullet.x - playerpos.x) > 60);
+                        farexplosionSound[Math.floor(Math.random() * farexplosionSound.length)].play(0, 1, 1)
                         explosion(bullet.x, bullet.y, bullet.size / 5, bullet.damage / 5, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 });
                     } else {
                         if (Math.abs(playerpos.y - bullet.y) + Math.abs(playerpos.x - bullet.x) < 20)
@@ -275,16 +276,17 @@
             }
         }
         function explosion(x, y, size, force, color1, color2, velx = 0, vely = 0) {
+            if (size + force > 5){
+                explosionSound[Math.floor(Math.random() * explosionSound.length)].play(0, 8 / (size + force), (size + force) / 100)
+            }
             for (const particle of explosionparticles) {
-                if ((Math.abs(x - particle.x) + Math.abs(y - particle.y)) < (size + force) * 10) {
+                if ((Math.abs(x - particle.x) + Math.abs(y - particle.y)) < (size + force) * 10)  {
                     let positions = { x: particle.x - x, y: particle.y - y }
                     let length = getlength(positions)
                     positions.x /= length
                     positions.y /= length
                     particle.velx += positions.x * (size + force) / 2 * Math.random()
                     particle.vely += positions.y * (size + force) / 2 * Math.random()
-                    // particle.velx += ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2) / 2;
-                    // particle.vely -= ((Math.random() * size - (size / 2)) + (Math.random() * force - (force / 2)) * 2) / 2;
                 }
             }
             camshakeVel.x += (Math.random() * force - force / 2) / 2;
