@@ -1,7 +1,8 @@
 function updatehelicopter() {
     helicopterSound.setVolume(0)
     for (const heli of helicopters) {
-        helicopterSound.setVolume(0.1)
+        if (!heli.type == "AAA")
+            helicopterSound.setVolume(0.1)
         //physics 1
         if (heli.hp > 14) {
             heli.velx *= 0.97
@@ -60,6 +61,7 @@ function updatehelicopter() {
             })
         }
         if (discovered && heli.hp > 14 && heli.type == "AAA" && Math.random() > 0.92 && Math.sin(tijd / 200) > 0.5 && Math.abs(heli.x - playerpos.x) < 1000) {
+            pickrandom(AAAgunshotSound).play(0, 1, 0.04)
             bullets.push({
                 x: heli.x,
                 y: heli.y,
