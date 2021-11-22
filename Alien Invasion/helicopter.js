@@ -1,5 +1,7 @@
 function updatehelicopter() {
+    helicopterSound.setVolume(0)
     for (const heli of helicopters) {
+        helicopterSound.setVolume(0.1)
         //physics 1
         if (heli.hp > 14) {
             heli.velx *= 0.97
@@ -28,6 +30,7 @@ function updatehelicopter() {
 
         //shooting
         if (discovered && heli.hp > 7 && heli.type == "police" && Math.random() > 0.99 && Math.abs(heli.x - playerpos.x) < 1000) {
+            pickrandom(gunshotSound).play(0, 1.4, 0.05)
             bullets.push({
                 x: heli.x,
                 y: heli.y,
@@ -42,6 +45,7 @@ function updatehelicopter() {
             })
         }
         if (discovered && heli.hp > 14 && heli.type == "military" && Math.random() > 0.92 && Math.sin(tijd / 200) > 0.5 && Math.abs(heli.x - playerpos.x) < 1000) {
+            pickrandom(gunshotSound).play(0, 1.4, 0.05)
             bullets.push({
                 x: heli.x,
                 y: heli.y,
@@ -193,7 +197,11 @@ function drawhelicopter() {
     for (const heli of helicopters) {
         //shadow
         fill("rgba(0,0,0,0.1)");
-        ellipse(heli.x - getcamx(), 544 - getcamy(), 75, 10);
+        if (heli.type == "AAA") {
+            ellipse(heli.x - getcamx(), 544 - getcamy(), 25, 10);
+        } else {
+            ellipse(heli.x - getcamx(), 544 - getcamy(), 75, 10);
+        }
         //helicopter
         translate(heli.x - getcamx(), heli.y - getcamy())
         rotate(heli.r * 0.01745329252)

@@ -12,12 +12,14 @@ let ufoimpactSound = []
 let humandeathSound = []
 let vehicleimpactSound = []
 let AAAgunshotSound = []
-
+function pickrandom(list) {
+    return list[Math.floor(Math.random() * list.length)]
+}
 function preload() {
     soundFormats('wav', 'ogg')
-    laserbeamSound = loadSound('Sounds/aliencar_acc_loop.wav')
+    laserbeamSound = loadSound('Sounds/heat_ray_loop.wav')
     alarmSound = loadSound('Sounds/alarm.wav')
-    tractorbeamSound = loadSound('Sounds/ion_thruster_loop.wav')
+    tractorbeamSound = loadSound('Sounds/whloop.wav')
     helicopterSound = loadSound('Sounds/helicopter_blades_spinning_loop_01.wav')
     deadSound = loadSound('Sounds/ziel_geluiden.ogg')
     explosionSound = [
@@ -46,7 +48,7 @@ function preload() {
         loadSound('Sounds/autocannon_3.wav')]
     gunshotSound = [
         loadSound('Sounds/Beretta_Model_92F_9_mm_Parabellum_Semi_Automatic_Pistol_Single_Shot_01.wav'),
-        loadSound('Sounds/Beretta_Model_92F_9_mm_Parabellum_Semi_Automatic_Pistol_Single_Shot_05.wav'),
+        loadSound('Sounds/Beretta_Model_92F_9_mm_Parabellum_Semi_Automatic_Pistol_Single_Shot_04.wav'),
         loadSound('Sounds/Beretta_Model_92F_9_mm_Parabellum_Semi_Automatic_Pistol_Single_Shot_06.wav'),
         loadSound('Sounds/Beretta_Model_92F_9_mm_Parabellum_Semi_Automatic_Pistol_Single_Shot_07.wav')]
     ufoimpactSound = [
@@ -70,6 +72,5 @@ function preload() {
     AAAgunshotSound = [
         loadSound('Sounds/machine_blaster-01.wav'),
         loadSound('Sounds/machine_blaster-02.wav'),
-        loadSound('Sounds/machine_blaster-03.wav'),
-        loadSound('Sounds/machine_blaster-00.wav')]
+        loadSound('Sounds/machine_blaster-03.wav')]
 }

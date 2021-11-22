@@ -67,6 +67,7 @@ function updatehuman(human) {
     });
     //death
     if (human.hp <= 0) {
+        pickrandom(humandeathSound).play(0, 1, 0.01)
         score += 0.5;
         explosion(human.x, human.y, 1, 1, { r: 255, g: 0, b: 0 }, { r: 255, g: 0, b: 0 }, human.velx, human.vely);
     }

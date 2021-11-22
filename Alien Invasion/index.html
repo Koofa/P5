@@ -48,6 +48,9 @@
         let camshakePos = { x: 0, y: 0 }
         const cartypes = ["car", "truck", "police", "tank"]
         function setup() {
+            laserbeamSound.loop(0, 1, 0)
+            tractorbeamSound.loop(0, 1, 0)
+            helicopterSound.loop(0, 1, 0)
             createCanvas(800, 600);
             for (let i = 0; i < 100; i++) {
                 stars.push({
@@ -92,6 +95,7 @@
                 playervel.r *= 0.90;
                 discovered = false
                 if (playerpos.y >= 544) {
+                    deadSound.play()
                     explosion(playerpos.x, playerpos.y, 35, 60, { r: 174, g: 0, b: 255 }, { r: 215, g: 135, b: 255 })
                     playerpos.y = -100000000000000
                 }
@@ -114,6 +118,8 @@
             magnet *= 0.9;
 
             if (score >= 5 && health > 0) {
+                if (!discovered)
+                    alarmSound.play()
                 discovered = true;
             }
 
@@ -169,11 +175,13 @@
                     if (shield > 0) {
                         shield -= bullet.damage;
                         bullets = bullets.filter(bullet => Math.abs(bullet.y - playerpos.y) + Math.abs(bullet.x - playerpos.x) > 60);
-                        farexplosionSound[Math.floor(Math.random() * farexplosionSound.length)].play(0, 1, 1)
+                        farexplosionSound[Math.floor(Math.random() * farexplosionSound.length)].play(0, 1, .1)
                         explosion(bullet.x, bullet.y, bullet.size / 5, bullet.damage / 5, { r: 255, g: 120, b: 30 }, { r: 51, g: 51, b: 51 });
                     } else {
-                        if (Math.abs(playerpos.y - bullet.y) + Math.abs(playerpos.x - bullet.x) < 20)
+                        if (Math.abs(playerpos.y - bullet.y) + Math.abs(playerpos.x - bullet.x) < 20) {
+                            pickrandom(ufoimpactSound).play(0, 1, 0.1)
                             health -= bullet.damage;
+                        }
                     }
                 if (bullet.y > 544) {
                     if (bullet.type == "AAAcar" || bullet.type == "AAAtank") {
@@ -264,6 +272,7 @@
         }
         function mousePressed() {
             if (mouseButton === LEFT && health > 0) {
+                pickrandom(laserblastSound).play(0, 1, 0.1)
                 weaponeffect = 0.9;
                 projectiles.push({
                     x: playerpos.x,
@@ -276,11 +285,11 @@
             }
         }
         function explosion(x, y, size, force, color1, color2, velx = 0, vely = 0) {
-            if (size + force > 5){
-                explosionSound[Math.floor(Math.random() * explosionSound.length)].play(0, 8 / (size + force), (size + force) / 100)
+            if (size + force > 5) {
+                pickrandom(explosionSound).play(0, 8 / (size + force), (size + force) / 100)
             }
             for (const particle of explosionparticles) {
-                if ((Math.abs(x - particle.x) + Math.abs(y - particle.y)) < (size + force) * 10)  {
+                if ((Math.abs(x - particle.x) + Math.abs(y - particle.y)) < (size + force) * 10) {
                     let positions = { x: particle.x - x, y: particle.y - y }
                     let length = getlength(positions)
                     positions.x /= length
@@ -435,7 +444,7 @@
             translate(playerpos.x - getcamx(), playerpos.y - getcamy())
             rotate(playerpos.r * 0.01745329252)
             noStroke();
-            if (discovered) {
+            if (discovered || health <= 0) {
                 fill("#606060");
             } else {
                 strokeWeight(1);
@@ -444,7 +453,7 @@
             }
             ellipse(0, 0, 55, 20);
 
-            if (discovered) {
+            if (discovered || health <= 0) {
                 noStroke();
                 fill("#9EFF75");
             } else {
@@ -459,7 +468,7 @@
                 weaponeffect = 0
             }
 
-            if (discovered) {
+            if (discovered || health <= 0) {
                 if ((mouseIsPressed) && mouseButton === LEFT) {
                     weaponcolor.r = 174;
                     weaponcolor.g = 0;
@@ -499,6 +508,9 @@
             fill("#444444");
             rect(0, 526 - getcamy(), 800, 500);
             drawstreetlines();
+            tractorbeamSound.setVolume(0)
+            if (weaponcolor.g == 209)
+                tractorbeamSound.setVolume(weaponeffect * 0.4)
             if (mouseIsPressed && health > 0) {
                 if (mouseButton === RIGHT) {
                     drawbeam();
@@ -508,10 +520,11 @@
             drawhuman();
             drawcar();
             drawhelicopter();
-
+            laserbeamSound.setVolume(0)
             if (mouseIsPressed && health > 0) {
                 if (mouseButton === CENTER) {
                     drawlaser();
+                    laserbeamSound.setVolume(0.4)
                     camshakeVel.x += (Math.random() - 0.5) / 2
                     camshakeVel.y += (Math.random() - 0.5) / 2
                     playervel.x += Math.random() * 8 - 4;
