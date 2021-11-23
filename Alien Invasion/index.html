@@ -21,6 +21,8 @@
         window.addEventListener('contextmenu', e => {
             e.preventDefault();
         });
+        let isMenuOpen = false
+        let Menutijd = 0
         let volume = 1
         let playerpos = { x: 0, y: 0, r: 0 }
         let playervel = { x: 0, y: 0, r: 0 }
@@ -221,7 +223,7 @@
                 particle.x += particle.velx;
                 particle.y += particle.vely;
                 particle.age += deltaTime / 1000;
-                if (particle.y > 544){
+                if (particle.y > 544) {
                     particle.vely *= -1
                     particle.y = 544
                 }
@@ -264,7 +266,14 @@
             projectiles = projectiles.filter(projectile => projectile.y < 544 && !projectile.expired);
         }
 
+        function keyPressed() {
+            if (keyCode === 32) {
+                isMenuOpen = !isMenuOpen
+            }
+        }
         function mouseWheel() {
+            if (isMenuOpen)
+                return
             weaponeffect = 1;
             weaponcolor.r = 81;
             weaponcolor.g = 127;
@@ -285,6 +294,8 @@
             return campos.y + camshakePos.y
         }
         function mousePressed() {
+            if (isMenuOpen)
+                return
             if (mouseButton === LEFT && health > 0) {
                 pickrandom(laserblastSound).play(0, 1, 0.1 * volume)
                 weaponeffect = 0.9;
@@ -518,13 +529,11 @@
             fill(`rgba(${weaponcolor.r}, ${weaponcolor.g}, ${weaponcolor.b}, ${weaponeffect})`)
             circle(0, -10, 20);
             resetMatrix();
-            if (discovered) {
-
-            }
-
         }
         function draw() {
-            update();
+            if (!isMenuOpen){
+                update();
+            }
             background("#273351");
             drawSterretjes();
             drawgebouwen();
@@ -537,7 +546,7 @@
             tractorbeamSound.setVolume(0)
             if (weaponcolor.g == 209)
                 tractorbeamSound.setVolume(weaponeffect * 0.4 * volume)
-            if (mouseIsPressed && health > 0) {
+            if (mouseIsPressed && health > 0 && !isMenuOpen) {
                 if (mouseButton === RIGHT) {
                     drawbeam();
                 }
@@ -548,7 +557,7 @@
             drawcar();
             drawhelicopter();
             laserbeamSound.setVolume(0)
-            if (mouseIsPressed && health > 0) {
+            if (mouseIsPressed && health > 0 && !isMenuOpen) {
                 if (mouseButton === CENTER) {
                     drawlaser();
                     laserbeamSound.setVolume(0.4 * volume)
@@ -575,6 +584,12 @@
                 textAlign(CENTER)
                 drawtext(400, 300, 80, "defeated", "#7A0800", "impact");
                 drawtext(400, 340, 25, `score = ${score}`, "white", "impact");
+            }
+            if (isMenuOpen) {
+                Menutijd += deltaTime;
+                fill(`rgba(255, 255, 255, ${Math.sin(Menutijd / 250) / 4 + 0.5})`)
+                rect(372,272, 20, 58)
+                rect(410,272, 20, 58)
             }
         }
     </script>
