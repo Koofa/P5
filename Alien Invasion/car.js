@@ -69,7 +69,7 @@ function updatecar() {
             })
         }
         if (car.type == "tank" && discovered && Math.abs(car.x - playerpos.x) < 1000 && car.hp > 7 && Math.abs(car.vely) < 5 && Math.random() > 0.95 && Math.sin(tijd / 100) > 0.9) {
-            pickrandom(tankshotSound).play(0, 0.5, 0.4 * volume)
+            pickrandom(tankshotSound).play(0, 0.5, 0.2 * volume)
             bullets.push({
                 type: "tank",
                 x: car.x,

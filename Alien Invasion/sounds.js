@@ -6,6 +6,7 @@ let alarmSound
 let tractorbeamSound
 let helicopterSound
 let deadSound
+let magnetSound
 let tankshotSound = []
 let gunshotSound = []
 let ufoimpactSound = []
@@ -22,6 +23,7 @@ function preload() {
     tractorbeamSound = loadSound('Sounds/whloop.wav')
     helicopterSound = loadSound('Sounds/helicopter_blades_spinning_loop_01.wav')
     deadSound = loadSound('Sounds/ziel_geluiden.ogg')
+    magnetSound = loadSound('Sounds/Ambience-Scifi-Machine-03.wav')
     explosionSound = [
         loadSound('Sounds/explosion_large_01.wav'),
         loadSound('Sounds/explosion_large_02.wav'),

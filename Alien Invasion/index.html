@@ -50,6 +50,7 @@
             laserbeamSound.loop(0, 1, 0)
             tractorbeamSound.loop(0, 1, 0)
             helicopterSound.loop(0, 1, 0)
+            magnetSound.loop(0, 1, 0)
             createCanvas(800, 600);
             for (let i = 0; i < 100; i++) {
                 stars.push({
@@ -122,8 +123,9 @@
             campos.x += camvel.x;
             campos.y += camvel.y;
 
-            magnet *= 0.9;
+            magnet *= 0.94;
             magnet = round(magnet, 3)
+            magnetSound.setVolume(magnet / 25 * volume)
 
             if (score >= 5 && health > 0) {
                 if (!discovered)
@@ -219,6 +221,10 @@
                 particle.x += particle.velx;
                 particle.y += particle.vely;
                 particle.age += deltaTime / 1000;
+                if (particle.y > 544){
+                    particle.vely *= -1
+                    particle.y = 544
+                }
                 if ((Math.abs(particle.x - playerpos.x) + Math.abs(particle.y - playerpos.y)) < 30) {
                     particle.velx += -(particle.velx - playervel.x) / 2;
                     particle.vely += -(particle.vely - playervel.y) / 2;
