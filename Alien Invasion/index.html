@@ -5,6 +5,11 @@
     <style>
         html,body{
             margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
         }
     </style>
     <meta charset="UTF-8">
@@ -27,6 +32,9 @@
             e.preventDefault();
         });
         window.addEventListener('mousedown', e => {
+            e.preventDefault();
+        });
+        document.addEventListener('scroll', e => {
             e.preventDefault();
         });
         let isMenuOpen = false
